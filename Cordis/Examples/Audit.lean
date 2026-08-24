@@ -4,3 +4,9 @@ import Cordis.Examples
 #print axioms Cordis.Examples.diamond_left_schedule
 #print axioms Cordis.Examples.diamond_right_schedule
 #print axioms Cordis.Examples.bothActive_quiet
+#print axioms Cordis.Examples.AgentModelApiReplacement.retire_normalization_schedule
+#print axioms Cordis.Examples.AgentModelApiReplacement.insertion_normalization_schedule
+#print axioms Cordis.Examples.AgentModelApiReplacement.final_quiet
+#print axioms Cordis.Examples.AgentModelApiReplacement.final_model_commits_apiNew
+#print axioms Cordis.Examples.AgentModelApiReplacement.initial_committed_priority_orientation
+#print axioms Cordis.Examples.AgentModelApiReplacement.checked_agent_model_api_replacement

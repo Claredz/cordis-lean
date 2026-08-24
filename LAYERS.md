@@ -24,12 +24,12 @@ an actual `Integrated.Step` schedule to a state with quiet Core projection.
 
 Requires extra hypotheses about commuting peaks or a checked orchestration
 epoch. Independent residual steps are conclusions of semantic stability lemmas,
-not assumptions. Same-actor and independent-actor peaks form a proved local
-confluence fragment. The generic Newman lemma is proved, but the full dependent
-Core critical-pair enumeration and unconditional `Core.localConfluent` are not
-present. Consequently full Core confluence is exposed only as
-`core_confluent_if_local`. Registry mutation is confined to explicit quiet-only
-`retire`, `remove`, and `insert` actions separated by integrated normalization.
+not assumptions. Same-actor, independent-actor, and Priority-related peaks are
+exhaustive and joinable at valid roots. Provider-first quiet endpoint uniqueness
+and termination feed the generic Newman lemma, yielding `core_confluent_at` and
+unique reachable Core normal forms. Registry mutation is confined to explicit
+quiet-only `retire`, `remove`, and `insert` actions separated by integrated
+normalization. Integrated shared-world confluence is not claimed.
 
 ## Paper-only claim
 

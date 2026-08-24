@@ -28,12 +28,16 @@
 - Constructed residual steps for statically independent Core actors from
   provider/target/unload-guard stability, and proved the same-actor or
   independent-actor local-confluence fragment.
-- Proved a generic Newman lemma and conditional Core confluence implication.
+- Closed all Priority-related peaks by proving canonical quiet endpoint
+  uniqueness, then proved full valid-state local confluence, Newman confluence,
+  and unique reachable quiet normal form.
 - Replaced the atomic epoch wrapper with quiet-only `retire`, `remove`, and
   `insert` actions, two explicit integrated normalization schedules, final ID
   change, soundness, quiet reachability, and observed consumer binding change.
 - Added concrete chain and diamond `ReflTransGen` schedules with a shared quiet
   terminal state, plus native effect tests.
+- Added a concrete `Agent → Model → APIProvider` quiet-only replacement with
+  explicit shutdown/startup schedules and final `Model → API_new` binding.
 
 The remaining limitations are tracked in `ROADMAP.md` and are not presented as
 verified Cordis claims.

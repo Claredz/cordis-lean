@@ -27,13 +27,14 @@ multiset or alternate phase potential was therefore unnecessary.
 The independent-peak proof derives target-view stability, provider stability,
 `reliedUpon`/unload-guard stability, both residual steps, and their common state
 from well-formedness plus absence of priority edges. Residual steps are not
-hypotheses. Same-actor determinism and this commuting theorem give a checked
-local-confluence fragment covering every same-actor or independent-actor peak.
-The generic Newman lemma is complete, and Core confluence follows conditionally
-from local confluence. Priority-related critical pairs have not all been
-enumerated, so the project does not declare unconditional Core confluence.
-Integrated confluence is not inferred from Core because a shared world requires
-effect independence.
+hypotheses. Priority-related peaks join at a canonical quiet endpoint: a
+provider-first induction proves quiet endpoint uniqueness, while preservation,
+progress, and termination construct reachability to that endpoint from both
+branches. Same-actor, independent, and Priority-related cases exhaust all actor
+pairs. The invariant-restricted Core relation is locally confluent and Newman
+therefore yields full confluence from every well-formed priority-acyclic root,
+plus a unique reachable quiet normal form. Integrated confluence is not inferred
+from Core because a shared world requires effect independence.
 
 ## Orchestration boundary
 

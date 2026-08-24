@@ -4,9 +4,9 @@ import Cordis.Integrated
 /-!
 # Cordis.Extended.Confluence
 
-This file records the exact confluence boundary.  It supplies a reusable Newman
-interface and a checked commuting fragment.  Full Core local confluence is not
-asserted: dependent critical-pair enumeration remains separate work.
+This file supplies the reusable Newman interface and the checked commuting
+fragment.  `Cordis.Extended.PriorityConfluence` builds on it to discharge the
+dependent peak class and prove full valid-state Core confluence.
 -/
 
 namespace Cordis.Extended
@@ -89,7 +89,7 @@ theorem steps_on_independent_fibers_commute
 
 /-- The local-confluence obligation restricted to peaks whose actors coincide
 or are statically independent.  This is the checked noninterfering fragment;
-only distinct priority-related actors remain as Core critical pairs. -/
+the complementary class is discharged in `PriorityConfluence`. -/
 def NoninterferingLocalConfluentAt
     [DecidableEq FiberId] [DecidableEq Key]
     (spec : FiberId → Core.Spec Key) (root : Core.State FiberId Key) : Prop :=

@@ -19,10 +19,12 @@ selected for this workspace (see `TOOLING.md`).
    Core/remaining-program lexicographic termination proof with integrated
    quiet-state reachability.
 4. `Cordis.Extended` — mechanically constructed independent residual steps,
-   the same-actor/independent-actor local-confluence fragment, a project-local
-   Newman lemma, and explicit quiet-only finite provider-replacement epochs.
+   exhaustive Priority-dependent peak joins, full valid-state Core confluence,
+   unique quiet normal forms, a project-local Newman lemma, and explicit
+   quiet-only finite provider-replacement epochs.
 5. `Cordis.Examples` — concrete chain/diamond schedules, quiet-state proof,
-   executable effect tests, and the checked five-stage replacement derivation.
+   executable effect tests, the checked five-stage replacement derivation, and
+   a concrete `Agent → Model → APIProvider` replacement.
 
 ## Build and audit
 
@@ -48,3 +50,5 @@ set, so a later orchestration epoch may replace a provider with a fresh ID.
 
 See `LAYERS.md`, `ASSUMPTIONS.md`, and `PAPER_MAP.md` before interpreting any
 theorem as a claim about the Cordis paper or an implementation.
+The exact confluence theorem, audit, and remaining boundary are recorded in
+`CONFLUENCE_STATUS.md`.

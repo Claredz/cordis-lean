@@ -102,7 +102,7 @@ theorem ambiguous_not_singleSource : ¬ SingleSource ambiguousSpec ambiguousStat
   intro hs
   have h := hs (p := false) (q := true) (by simp [ambiguousState])
     (by simp [ambiguousState]) (by decide)
-  simpa [ambiguousSpec] using h
+  simp [ambiguousSpec] at h
 
 theorem ambiguous_provider_none : provider ambiguousSpec ambiguousState () = none := by
   apply Option.eq_none_iff_forall_not_mem.mpr
@@ -116,5 +116,21 @@ theorem ambiguous_multi_provider_resolution :
     provider ambiguousSpec ambiguousState () = none ∧
       ¬ SingleSource ambiguousSpec ambiguousState :=
   ⟨ambiguous_provider_none, ambiguous_not_singleSource⟩
+
+/-- Executable adversarial check for the termination proof's local table:
+the candidate bound two fails on the transition from not-ready to ready. -/
+theorem fuelGrowthBound_two_fails :
+    ¬ ∀ oldReady newReady : Bool,
+      (if newReady then 3 else 0) ≤
+        (if oldReady then 3 else 0) + 2 := by
+  decide
+
+/-- Executable exhaustive check over all four Boolean readiness pairs: the
+declared bound three covers the complete inactive-row local fuel change. -/
+theorem fuelGrowthBound_three_suffices :
+    ∀ oldReady newReady : Bool,
+      (if newReady then 3 else 0) ≤
+        (if oldReady then 3 else 0) + fuelGrowthBound := by
+  decide
 
 end Cordis.Core.Counterexamples

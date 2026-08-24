@@ -20,7 +20,8 @@
   assumption chooses a canonical endpoint.
 - The observed consumer-binding theorem additionally assumes that the fresh
   provider and observed consumer are ready at the actual final endpoint. This
-  is explicit because dependent-peak confluence remains open.
+  remains explicit because it is an orchestration readiness premise, not a Core
+  confluence premise.
 - `everRegistered` is monotone. Since the universe is finite, only finitely many
   fresh replacements can be represented in one trace.
 - Classical choice, propositional extensionality, and quotient soundness may

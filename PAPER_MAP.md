@@ -20,7 +20,10 @@ file maps concepts, not implementation correctness.
 | Integrated quiet reachability | `Integrated.exists_coreQuiet_reachable` | Integrated theorem |
 | Independent peaks | `independent_stepAt_commute`, `steps_on_independent_fibers_commute` | Extended theorem; residual steps constructed |
 | Noninterfering local confluence | `core_noninterfering_local_confluent_at` | Extended same-actor/independent-actor fragment |
-| Newman implication | `newman`, `core_confluent_if_local` | Extended theorem; local confluence remains open |
+| Priority-dependent peaks | `priority_related_stepAt_joinable`, `core_stepAt_peak_classification` | Extended theorem; all five-by-five rule combinations covered |
+| Full Core confluence | `core_local_confluent_at`, `core_confluent_at`, `core_unique_normal_form` | Extended theorem for well-formed priority-acyclic roots |
+| Newman implication | `newman`, `confluentCoreStep_confluent` | Extended theorem applied to the invariant-restricted Core relation |
 | Quiet-only provider replacement | `provider_replacement_derivation`, `provider_replacement_reaches_quiet`, `provider_identity_changes` | Extended explicit five-stage finite epoch |
 | Observed binding replacement | `observed_consumer_binding_changes` | Extended theorem; explicit final-readiness assumption |
+| Concrete Agent→Model→API replacement | `checked_agent_model_api_replacement` | Example; explicit schedules and final quiet binding |
 | Full runtime/HMR semantics | none | Paper-only / future work |
