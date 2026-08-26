@@ -1,0 +1,701 @@
+{
+  "metadata": {
+    "artifact_title": "DeepSeek Harness ADR-02: Coeffect Store, Specification, and Partiality Architecture",
+    "decision_id": "ADR-02",
+    "created_on": "2026-08-25",
+    "artifact_version": "1.0-accepted-compiler-pending",
+    "language": "en",
+    "source_title": "A Programming Paradigm for Spatiotemporal Composability",
+    "source_sha256": "4d48478dc0b6222d9f74d7db10ee776449b1209eb112632336544d32a49db97f"
+  },
+  "baseline": {
+    "dependency_graph": {
+      "artifact": "DeepSeek-Harness-03-Definition-Theorem-Dependency-Graph.json",
+      "version": "1.0-frozen",
+      "sha256": "8f99db87d7aa4d856657abdaf469d9941d3af7fea88ababd2e58cba49041ded8",
+      "mutated_by_this_decision": false
+    },
+    "disposition_specification": {
+      "artifact": "DeepSeek-Harness-04-Formalization-Disposition-Specification.json",
+      "version": "1.0-baseline",
+      "sha256": "63d1fb68bcebb63e5282c7314d03038a93db0a836a6c8b1a08a41c2cd70a43db",
+      "mutated_by_this_decision": false
+    }
+  },
+  "dependencies": {
+    "ADR-01": {
+      "title": "Equivalence Architecture",
+      "status": "accepted",
+      "implementation_validation": "passed-user-reported-one-shot-no-modifications",
+      "consumed_contracts": [
+        "explicit RelSpec values",
+        "Respects and PointwiseRel distinction",
+        "selected-inverse coherence",
+        "individual inverse properness",
+        "local recovery",
+        "exact ordinary outcomes",
+        "total effects remain an exact raw computation layer"
+      ]
+    }
+  },
+  "decision": {
+    "status": "accepted",
+    "architecture_validation": "accepted",
+    "implementation_validation": "compiler-pending",
+    "resolves": [
+      "BD-COEFFECT"
+    ],
+    "statement": "Use Mathlib Finmap as the authoritative finite dependent flat store; use Set K for semantic specifications and Finset K for executable specifications and provisions; separate total raw store operations from legal binding transitions with guarded partial inverses; use proof-indexed success views, Option mathematical partiality, and Except diagnostics connected by refinement; add an outcome-dependent Option-Kleisli partial-effect companion to ADR-01; and represent D24 operations by typed per-key codes with key-local lifts.",
+    "primary_pattern": "Finmap-plus-dual-specifications-plus-layered-partiality",
+    "semantic_change_policy": "superseding-adr-required"
+  },
+  "global_assumptions": {
+    "required_for_executable_store_and_specs": [
+      "DecidableEq K"
+    ],
+    "forbidden_as_global_requirements": [
+      "Fintype K",
+      "forall k, DecidableEq (V k)",
+      "Zero (V k)",
+      "Inhabited (V k)"
+    ],
+    "reason": "presence and finite-key computation compare keys, not service values; Finmap carries finite support without making the entire key type finite"
+  },
+  "alternatives": {
+    "store": [
+      {
+        "id": "STORE-A",
+        "name": "dependent-function-plus-finite-support-proof",
+        "disposition": "rejected-as-concrete",
+        "reason": "It does not directly carry executable support enumeration and recreates Finmap; it remains an allowed semantic view."
+      },
+      {
+        "id": "STORE-B",
+        "name": "mathlib-finmap",
+        "disposition": "accepted",
+        "reason": "It is a finite dependent map with dependent lookup, keys, insert, erase, extract, union, and extensionality."
+      },
+      {
+        "id": "STORE-C",
+        "name": "dfinsupp",
+        "disposition": "rejected",
+        "reason": "It requires zero/default values and would conflate absence with zero."
+      },
+      {
+        "id": "STORE-D",
+        "name": "finsupp-to-sigma-values",
+        "disposition": "rejected",
+        "reason": "It loses the key-indexed value-type invariant and requires casts or validation."
+      },
+      {
+        "id": "STORE-E",
+        "name": "custom-carrier-polymorphic-store-class",
+        "disposition": "deferred-until-second-implementation",
+        "reason": "The stable proof-facing facade is fixed, but a higher-kinded abstraction has no demonstrated second implementation yet."
+      }
+    ],
+    "specification": [
+      {
+        "id": "SPEC-A",
+        "name": "set-only",
+        "disposition": "rejected",
+        "reason": "Arbitrary predicates are not generally enumerable or decidable."
+      },
+      {
+        "id": "SPEC-B",
+        "name": "finset-only",
+        "disposition": "rejected",
+        "reason": "It silently strengthens every semantic statement to finite specifications."
+      },
+      {
+        "id": "SPEC-C",
+        "name": "set-finite-proof-as-runtime-data",
+        "disposition": "rejected",
+        "reason": "A propositional finiteness proof is not the executable finite enumeration consumed by notify."
+      },
+      {
+        "id": "SPEC-D",
+        "name": "set-and-finset-with-adequacy",
+        "disposition": "accepted",
+        "reason": "It retains semantic generality and executable enumeration with an explicit bridge."
+      }
+    ],
+    "partiality": [
+      {
+        "id": "PART-A",
+        "name": "proof-arguments-only",
+        "disposition": "rejected-as-sole-interface",
+        "reason": "It cannot execute unchecked runtime input or model common-domain partiality."
+      },
+      {
+        "id": "PART-B",
+        "name": "option-only",
+        "disposition": "rejected-as-sole-interface",
+        "reason": "It is the correct mathematical erasure but insufficient for runtime diagnostics."
+      },
+      {
+        "id": "PART-C",
+        "name": "except-only",
+        "disposition": "rejected-as-mathematical-core",
+        "reason": "It makes diagnostic payload comparison infect operation law and independence theorems."
+      },
+      {
+        "id": "PART-D",
+        "name": "failure-totalized-as-identity",
+        "disposition": "rejected",
+        "reason": "It invents a false transition and weakens protocol and recovery semantics."
+      },
+      {
+        "id": "PART-E",
+        "name": "proof-success-plus-option-semantics-plus-except-diagnostics",
+        "disposition": "accepted",
+        "reason": "Each interface has one role and erasure/refinement theorems prevent semantic drift."
+      }
+    ],
+    "adr01_bridge": [
+      {
+        "id": "BRIDGE-A",
+        "name": "force-partial-operations-into-total-effect",
+        "disposition": "rejected",
+        "reason": "It erases preconditions and definedness or hides them behind artificial defaults."
+      },
+      {
+        "id": "BRIDGE-B",
+        "name": "independent-duplicated-partial-theory",
+        "disposition": "rejected",
+        "reason": "It duplicates ADR-01 result relations, inverse laws, and specializations."
+      },
+      {
+        "id": "BRIDGE-C",
+        "name": "option-kleisli-companion-with-total-embedding",
+        "disposition": "accepted",
+        "reason": "It makes partial composition honest and proves the total ADR-01 fragment is a specialization."
+      }
+    ]
+  },
+  "store_architecture": {
+    "carrier": "Finmap V",
+    "project_alias": "Store V",
+    "internal_representation_unfolding_downstream": "forbidden",
+    "proof_facing_api": [
+      "lookup : (k : K) -> Store V -> Option (V k)",
+      "keys : Store V -> Finset K",
+      "insert : (k : K) -> V k -> Store V -> Store V",
+      "erase : (k : K) -> Store V -> Store V",
+      "extract : (k : K) -> Store V -> Option (V k) times Store V",
+      "union : Store V -> Store V -> Store V"
+    ],
+    "required_law_families": [
+      "lookup extensionality",
+      "key membership iff lookup defined iff membership in keys",
+      "same-key lookup after insert",
+      "distinct-key lookup frame after insert",
+      "same-key lookup after erase",
+      "distinct-key lookup frame after erase",
+      "keys after insert and erase",
+      "fresh insert then erase recovery",
+      "present erase then captured-value insert recovery",
+      "distinct-key insert and erase commutation",
+      "union support and lookup laws",
+      "disjoint union commutativity"
+    ],
+    "raw_semantics": {
+      "lookup": "total function returning Option",
+      "insert": "total and overwriting",
+      "erase": "total and absent-key no-op",
+      "union": "left-biased before disjointness proof"
+    },
+    "documentation": "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finmap.html"
+  },
+  "specification_architecture": {
+    "SemanticSpec": "Set K",
+    "ExecSpec": "Finset K",
+    "Provision": "Finset K",
+    "bridge": "semanticize d is the Finset-to-Set coercion",
+    "SatisfiesSem": "forall k in d, k is present in sigma",
+    "SatisfiesExec": "d is a subset of sigma.keys",
+    "satisfiesB": "decide (SatisfiesExec sigma d)",
+    "required_theorems": [
+      "SatisfiesExec sigma d iff SatisfiesSem sigma (semanticize d)",
+      "satisfiesB sigma d equals true iff SatisfiesExec sigma d"
+    ],
+    "invalid_paper_inference": "finite support of sigma does not decide satisfaction for arbitrary d : Set K",
+    "decidability_documentation": "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Defs.html#Finset.instDecidableRelSubset"
+  },
+  "notification_architecture": {
+    "result_type": [
+      "activating",
+      "deactivating",
+      "neutral"
+    ],
+    "truth_table": [
+      {
+        "before": false,
+        "after": true,
+        "result": "activating"
+      },
+      {
+        "before": true,
+        "after": false,
+        "result": "deactivating"
+      },
+      {
+        "before": false,
+        "after": false,
+        "result": "neutral"
+      },
+      {
+        "before": true,
+        "after": true,
+        "result": "neutral"
+      }
+    ],
+    "layers": {
+      "semantic": "ClassifiesSem before after (d : Set K) n",
+      "executable_relation": "ClassifiesExec before after (d : Finset K) n",
+      "executable_function": "notify before after d"
+    },
+    "adequacy": [
+      "ClassifiesExec before after d (notify before after d)",
+      "ClassifiesExec before after d n iff ClassifiesSem before after (semanticize d) n"
+    ],
+    "non_implication": "classification does not establish registry discovery, delivery, uniqueness, or delivery ordering"
+  },
+  "binding_protocol": {
+    "errors": [
+      "missing",
+      "alreadyPresent"
+    ],
+    "interfaces": {
+      "proof_success": "successful state/result with a presence or absence proof",
+      "mathematical": "Option with none meaning no legal successor/result",
+      "checked": "Except StoreError for diagnostics"
+    },
+    "erasure_contracts": [
+      "provideE k v sigma = ok tau iff provide? k v sigma = some tau",
+      "revokeE k sigma = ok r iff revoke? k sigma = some r",
+      "equivalent require and error-branch theorems"
+    ],
+    "provide": {
+      "precondition": "k absent",
+      "successor": "insert k v sigma",
+      "inverse": "presence-guarded revoke at captured physical key k"
+    },
+    "revoke": {
+      "precondition": "k present with captured old value v",
+      "successor": "erase k sigma",
+      "inverse": "absence-guarded provide of captured-v, not unchecked raw insert"
+    },
+    "invalid_request": "no successor and never identity"
+  },
+  "partiality_companion": {
+    "PartialMap": "alpha -> Option beta",
+    "identity": "some",
+    "composition": "Option.bind in execution order",
+    "exact_laws": [
+      "left identity",
+      "right identity",
+      "associativity"
+    ],
+    "OptionRel": {
+      "none_none": true,
+      "some_some": "underlying relation",
+      "mixed": false,
+      "meaning": "definedness is observable"
+    },
+    "PartialResult": {
+      "fields": [
+        "state : Gamma",
+        "undo : PartialMap Gamma Gamma",
+        "outcome : B"
+      ]
+    },
+    "PartialEffect": "Gamma -> Option (PartialResult Gamma B)",
+    "effect_bind": {
+      "pure": "ppure : B -> PartialEffect Gamma B",
+      "bind": "pbindEffect : PartialEffect Gamma B -> (B -> PartialEffect Gamma C) -> PartialEffect Gamma C",
+      "first_failure": "none with no big-step successor",
+      "second_failure": "none with no big-step successor",
+      "two_successes": "second successor, second outcome, inverse pcomp second.undo first.undo",
+      "runtime_scope_note": "atomic big-step denotation does not remove later rollback, iterator, and exception obligations",
+      "exact_laws": [
+        "left unit",
+        "right unit",
+        "associativity"
+      ],
+      "lawfulness_closure": "lawful first effect and lawful same-relation continuation at every exact outcome imply lawful bind"
+    },
+    "law_fields": {
+      "run_respects": "related inputs have equal definedness; successful successors are related, selected inverses are pointwise OptionRel-related, and outcomes are exactly equal",
+      "undo_respects": "every inverse returned by a successful run is PRespects",
+      "recovers": "the returned inverse is defined at the actual successor and restores the input modulo the selected relation"
+    },
+    "total_embedding": {
+      "direction": "ADR-01 total effect to PartialEffect by wrapping run and undo results in some",
+      "lawfulness_preserved": true
+    },
+    "partial_to_total": {
+      "automatic": false,
+      "required_evidence": [
+        "forward run is defined on every invariant state",
+        "every successful successor preserves the invariant",
+        "every returned undo is defined on every invariant state",
+        "every returned undo result preserves the invariant"
+      ],
+      "outcome_boundary": "the restricted construction is outcome-carrying; projection to ADR-01 plain Effect explicitly discards the outcome",
+      "failure_route": "future R.fail or iterator result when operationally observed",
+      "forbidden": "default successor, default inverse, or identity totalization"
+    }
+  },
+  "d24_architecture": {
+    "representation": "typed per-key operation codes",
+    "fields": [
+      "Op : K -> Type",
+      "Arg : (k : K) -> Op k -> Type",
+      "Out : (k : K) -> Op k -> Type",
+      "run : (k : K) -> (op : Op k) -> Arg k op -> V k -> Option (PartialResult (V k) (Out k op))"
+    ],
+    "operation_code_finiteness_required": false,
+    "local_admission": "full IsLawfulPartialEffect contract at KeyObs k",
+    "checked_error_payload": "operation-specific Except payload may refine Option; exact tags by default if observed",
+    "key_local_lift_required_theorems": [
+      "missing binding gives undefined lifted run",
+      "local undefinedness gives undefined lifted run",
+      "successful value operation preserves support",
+      "operated-key lookup equals local successor",
+      "every distinct-key lookup is unchanged",
+      "local recovery lifts to store recovery",
+      "local lawfulness lifts from KeyObs to StoreObs",
+      "distinct physical key operations satisfy T40",
+      "partial commutation is stated on common defined domain or through OptionRel",
+      "typed D41 constructors denote through ppure and pbindEffect and preserve lawfulness"
+    ],
+    "separate_protocols": {
+      "BindingTransition": "domain changing provide/revoke",
+      "KeyOperation": "existing-key domain-preserving D24 operation"
+    }
+  },
+  "store_observation": {
+    "definition": "forall k, OptionRel (KeyObs k) (lookup k sigma) (lookup k tau)",
+    "equivalent_paper_reading": "same domain plus pointwise related bound values",
+    "required_theorems": [
+      "equivalence when every KeyObs k is an equivalence",
+      "same keys",
+      "semantic and executable satisfaction invariance",
+      "notification classification and function invariance",
+      "related same-key inserts preserve StoreObs",
+      "same-key erasure preserves StoreObs",
+      "disjoint union congruence",
+      "D24 key lift lawfulness"
+    ],
+    "value_decidable_equality_required": false
+  },
+  "section4_contracts": {
+    "requirements": "Finset K",
+    "provisions": "Finset K",
+    "local_table": "Store V",
+    "invariants": [
+      "all writes lie in declared provisions",
+      "local table keys are a subset of provisions in reachable states",
+      "distinct registered flat-calculus fiber incarnations in dom(Fgamma), including retired entries not yet removed, have disjoint provisions",
+      "only fibers whose lifecycle constructor is exactly Active contribute tables to the global store; Reloading and Unloading count as installed but do not contribute",
+      "active tables are folded with Finmap.union",
+      "pairwise disjointness makes union fold-order independent",
+      "active provider uniqueness",
+      "possible registered provider uniqueness, including retired entries until O-Remove",
+      "D69 after successful completed activation: table.keys equals provisions"
+    ],
+    "provider_distinctions": [
+      "registered declared possible provider",
+      "currently active provider",
+      "currently present binding"
+    ],
+    "registry_finiteness_owner": [
+      "BD-STATE",
+      "BD-NAMES"
+    ],
+    "realm_generalization_owner": "BD-SCOPED"
+  },
+  "paper_repair_manifest": {
+    "D22": "Finmap store plus stable API",
+    "D23": "raw versus legal operations, explicit partiality, captured recovery inverses",
+    "D24": "typed operation codes, partial result law, key-local lift",
+    "D25": "Set semantic spec plus Finset executable spec",
+    "SAT": "semantic satisfaction, executable satisfaction, Boolean checker, adequacy",
+    "D26": "Prop classifier plus executable notify and adequacy",
+    "D28-D31": "reuse flat substrate but remain blocked by BD-SCOPED",
+    "D33": "pointwise OptionRel KeyObs store relation; full-state lift awaits BD-STATE",
+    "D34-L35": "typed partial test ingredients and ADR-01 selected-inverse repair",
+    "D39": "partial independence with common definedness, result relation, selected inverse, and exact outcomes",
+    "T40": "distinct flat physical-key theorem",
+    "D41-T42": "typed mediated syntax denoted by outcome-dependent bind, bind lawfulness, and structural independence proof",
+    "D43": "finite requirements/provisions and explicit write-frame obligation",
+    "D45": "finite tables, active disjoint union, provider distinctions",
+    "D69": "successful completed activation table keys equal declared provisions"
+  },
+  "affected_disposition_nodes": {
+    "count": 20,
+    "numbered_count": 19,
+    "auxiliary_count": 1,
+    "all": [
+      "D22",
+      "D23",
+      "D24",
+      "D25",
+      "D26",
+      "D28",
+      "D29",
+      "D30",
+      "D31",
+      "D33",
+      "D34",
+      "L35",
+      "D39",
+      "T40",
+      "D41",
+      "T42",
+      "D43",
+      "D45",
+      "D69",
+      "SAT"
+    ],
+    "effective_readiness_rule": "remove only BD-COEFFECT from each node blocker set; preserve all other blockers and all frozen dependency edges",
+    "blocker_free_after_accepted_adr01_and_adr02": [
+      "D22",
+      "D23",
+      "D24",
+      "D25",
+      "D26",
+      "D34",
+      "L35",
+      "D39",
+      "T40",
+      "D41",
+      "T42",
+      "SAT"
+    ],
+    "remaining_blockers": {
+      "D28": [
+        "BD-SCOPED"
+      ],
+      "D29": [
+        "BD-SCOPED"
+      ],
+      "D30": [
+        "BD-SCOPED"
+      ],
+      "D31": [
+        "BD-SCOPED"
+      ],
+      "D33": [
+        "BD-STATE"
+      ],
+      "D43": [
+        "BD-STATE",
+        "BD-ITER"
+      ],
+      "D45": [
+        "BD-STATE",
+        "BD-NAMES"
+      ],
+      "D69": [
+        "BD-ITER"
+      ]
+    }
+  },
+  "coding_rules": [
+    "Use the Store facade and do not unfold Finmap entries downstream.",
+    "Require DecidableEq K only at executable boundaries and do not assume Fintype K globally.",
+    "Do not require value equality for presence, satisfaction, recovery, or observation.",
+    "Keep Set semantic specifications and Finset executable specifications distinct and bridged.",
+    "Never infer arbitrary Set satisfaction decidability from finite store support.",
+    "Keep raw overwrite and erase-no-op functions separate from legal protocol transitions.",
+    "An invalid protocol operation has no successor and is never identity.",
+    "Use Option for mathematical partiality and Except for diagnostics with erasure theorems.",
+    "Compose partial functions with Option bind and never with defaults.",
+    "Compose partial effects with outcome-dependent bind; second-stage failure has no big-step successor and successful inverses compose in reverse order.",
+    "Before restricting a partial operation to a total ADR-01 effect, prove forward totality, successor invariant closure, returned-undo totality on the invariant, and undo-result invariant closure.",
+    "Preserve definedness, successor relation, selected inverse, inverse properness, recovery, and exact outcomes.",
+    "Use typed operation codes for heterogeneous D24, D34, and D41 syntax.",
+    "Separate domain-preserving D24 operations from domain-changing binding transitions.",
+    "Returned binding inverses re-check protocol presence or absence and never use unchecked overwrite as the inverse semantics.",
+    "Scope T40 to distinct flat physical keys.",
+    "Aggregate tables of exactly Active fibers only, under finite-registry and registered-provision disjointness invariants.",
+    "Name registered possible providers, active providers, and present bindings separately.",
+    "State D69 only over successful completed activations."
+  ],
+  "acceptance_checks": [
+    {
+      "id": "COE-AC-01",
+      "check": "finite dependent store API",
+      "architecture_status": "passed",
+      "implementation_status": "represented-in-spike-compiler-pending"
+    },
+    {
+      "id": "COE-AC-02",
+      "check": "only DecidableEq K required",
+      "architecture_status": "passed",
+      "implementation_status": "represented-in-spike"
+    },
+    {
+      "id": "COE-AC-03",
+      "check": "Set and Finset specifications distinguished and bridged",
+      "architecture_status": "passed",
+      "implementation_status": "adequacy-represented-compiler-pending"
+    },
+    {
+      "id": "COE-AC-04",
+      "check": "executable satisfaction checker",
+      "architecture_status": "passed",
+      "implementation_status": "represented-compiler-pending"
+    },
+    {
+      "id": "COE-AC-05",
+      "check": "semantic and executable notification with truth table",
+      "architecture_status": "passed",
+      "implementation_status": "represented-compiler-pending"
+    },
+    {
+      "id": "COE-AC-06",
+      "check": "raw store and legal protocol separation",
+      "architecture_status": "passed",
+      "implementation_status": "represented-in-spike"
+    },
+    {
+      "id": "COE-AC-07",
+      "check": "invalid operation has no successor",
+      "architecture_status": "passed",
+      "implementation_status": "Option-none-and-Except-error-fixed"
+    },
+    {
+      "id": "COE-AC-08",
+      "check": "proof Option and Except refinement",
+      "architecture_status": "passed",
+      "implementation_status": "representative-success-lemmas-compiler-pending"
+    },
+    {
+      "id": "COE-AC-09",
+      "check": "provide and revoke recovery",
+      "architecture_status": "passed-by-theorem-audit",
+      "implementation_status": "proofs-represented-compiler-pending"
+    },
+    {
+      "id": "COE-AC-10",
+      "check": "Option-Kleisli partial-map laws and outcome-dependent partial-effect bind laws",
+      "architecture_status": "passed-by-theorem-audit",
+      "implementation_status": "map-and-effect-bind-proofs-plus-failure-behavior-represented-compiler-pending"
+    },
+    {
+      "id": "COE-AC-11",
+      "check": "full partial ADR-01 law and lawfulness closure under outcome-dependent bind",
+      "architecture_status": "passed-by-law-audit",
+      "implementation_status": "law-record-and-bind-closure-proof-represented-compiler-pending"
+    },
+    {
+      "id": "COE-AC-12",
+      "check": "lawful total-to-partial embedding",
+      "architecture_status": "passed-by-theorem-audit",
+      "implementation_status": "proof-represented-compiler-pending"
+    },
+    {
+      "id": "COE-AC-13",
+      "check": "typed D24 operation family and key lift",
+      "architecture_status": "passed",
+      "implementation_status": "carrier-and-lift-represented-full-theorem-family-blueprint-work"
+    },
+    {
+      "id": "COE-AC-14",
+      "check": "StoreObs definedness and satisfaction invariance",
+      "architecture_status": "passed-by-theorem-audit",
+      "implementation_status": "representative-proofs-compiler-pending"
+    },
+    {
+      "id": "COE-AC-15",
+      "check": "Section 4 finite declarations and aggregation contracts",
+      "architecture_status": "passed",
+      "implementation_status": "registry-awaits-other-adrs"
+    },
+    {
+      "id": "COE-AC-16",
+      "check": "affected disposition node set matches baseline",
+      "architecture_status": "passed",
+      "implementation_status": "machine-validated"
+    },
+    {
+      "id": "COE-AC-17",
+      "check": "partial-to-total restriction requires forward success, successor closure, inverse totality, and inverse closure on the invariant",
+      "architecture_status": "passed",
+      "implementation_status": "TotalizableOn-represented-restriction-construction-production-work"
+    }
+  ],
+  "validation": {
+    "paper_audit": "completed",
+    "architecture_comparison": "completed",
+    "mathlib_api_audit": {
+      "status": "completed",
+      "sources": [
+        "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finmap.html",
+        "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Defs.html"
+      ]
+    },
+    "lean_spike": {
+      "artifact": "DeepSeek-Harness-06-ADR-02-Coeffect-Store-and-Partiality-Architecture-Spike.lean",
+      "scope": [
+        "Finmap Store alias",
+        "semantic and executable specifications",
+        "satisfaction checker and adequacy",
+        "notification classifier function and adequacy",
+        "provide and revoke checked views and recovery",
+        "Option-Kleisli partial maps",
+        "outcome-dependent partial-effect bind and atomic failure behavior",
+        "lawfulness closure under outcome-dependent partial-effect bind",
+        "TotalizableOn invariant evidence",
+        "lawful partial effect relation",
+        "lawful total-to-partial embedding",
+        "typed D24 operation family and key-local lift",
+        "StoreObs definedness and satisfaction invariance"
+      ],
+      "manual_type_audit": "completed",
+      "creation_environment": "Lean and Lake unavailable",
+      "compiler_validation": "pending",
+      "required_gate": "lake env lean DeepSeek-Harness-06-ADR-02-Coeffect-Store-and-Partiality-Architecture-Spike.lean",
+      "required_metadata": "record exact Lean and Mathlib versions"
+    }
+  },
+  "non_decisions": [
+    "final Lean module names namespaces and import graph",
+    "future carrier-polymorphic store abstraction",
+    "BD-SCOPED realm resolver and interception metadata",
+    "BD-STATE unified state and registry representation",
+    "BD-ITER iterator and failing iterator carrier",
+    "BD-CONTROL asynchronous and failure semantics",
+    "BD-NAMES finite registry incarnation representation",
+    "concrete D34 test AST and enumeration policy",
+    "application-specific per-key equivalences",
+    "application-specific D24 error payloads",
+    "ownership milestones tactics and style"
+  ],
+  "revision": {
+    "editorial_change": "allowed-with-recorded-patch-version",
+    "semantic_change": "requires-superseding-adr",
+    "reopen_triggers": [
+      "pinned compilation shows required Finmap laws need materially stronger global assumptions",
+      "typed D24 codes cannot express a required operation without unsafe casts or lost outcome typing",
+      "total-to-partial lawfulness requires a stronger ADR-01 result relation",
+      "active-table aggregation is not fold-order independent under the selected disjointness invariants",
+      "unified-state architecture requires infinite ordinary reachable coeffect stores",
+      "BD-SCOPED cannot provide a lookup-and-update-faithful flat embedding",
+      "executable notification needs more than finite requirements plus finite registry or reverse index",
+      "mathematical independence repeatedly must observe diagnostic error payloads",
+      "a second concrete store implementation makes the current facade insufficient"
+    ],
+    "workflow_rule": "derive effective readiness from immutable baseline dispositions plus accepted and superseding ADRs and newly recorded blockers"
+  },
+  "integrity": {
+    "markdown_artifact": "DeepSeek-Harness-06-ADR-02-Coeffect-Store-and-Partiality-Architecture.md",
+    "markdown_sha256": "f1544cb916a50ec62359d70af98d52ab689522a20545bc98403bc19faf40630a",
+    "lean_spike_sha256": "39f7c237777b4b7f0ed533a8ab9a53b0f38e111cd3758b30c52a5cc26438cb82",
+    "json_validated": true,
+    "affected_node_set_matches_baseline": true
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "metadata": {
+    "artifact_title": "DeepSeek Harness ADR-03-CLOSURE: BD-STATE Contract Hardening",
+    "packet_id": "ADR-03-CLOSURE",
+    "parent_decision": "ADR-03",
+    "status": "closure-accepted-compiler-validated",
+    "artifact_version": "1.1-accepted-compiler-validated",
+    "created_on": "2026-08-26",
+    "validation_updated_on": "2026-08-26",
+    "semantic_change": false,
+    "supersedes": [],
+    "language": "Lean 4 contract-hardening packet with Markdown rationale",
+    "source_title": "Shi, Zhang, and Cui, A Programming Paradigm for Spatiotemporal Composability",
+    "source_sha256": "4d48478dc0b6222d9f74d7db10ee776449b1209eb112632336544d32a49db97f"
+  },
+  "parent_and_baselines": {
+    "parent_adr": {
+      "artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture",
+      "version": "1.1-accepted-compiler-validated-user-reported",
+      "json_sha256": "0c6861367cf3061358366e90b2e2848649d96f5ad792185ed5f2e186d0520d48",
+      "markdown_sha256": "6cb8553b7ab43cdf3b5ace97598decd7d5150e185073d0a65c91582641d82bb2",
+      "lean_spike_sha256": "96f75e4b77463790fdb28762df11dac5e079e1a244172fcbf7dabe89b07ba71cc"
+    },
+    "adr01": {
+      "artifact": "DeepSeek-Harness-05-ADR-01-Equivalence-Architecture.json",
+      "json_sha256": "1963c468ebaca2cd86635e88881ecda373b8278d0895c3805c52717e0a056dd5"
+    },
+    "adr02": {
+      "artifact": "DeepSeek-Harness-06-ADR-02-Coeffect-Store-and-Partiality-Architecture.json",
+      "json_sha256": "f1b8e298edb7405a4a67fa10869d621a2bfeab80d5e5cf6a86feb752878699e5"
+    },
+    "dependency_graph": {
+      "artifact": "DeepSeek-Harness-03-Definition-Theorem-Dependency-Graph.json",
+      "version": "1.0-frozen",
+      "sha256": "8f99db87d7aa4d856657abdaf469d9941d3af7fea88ababd2e58cba49041ded8",
+      "mutated": false
+    },
+    "disposition": {
+      "artifact": "DeepSeek-Harness-04-Formalization-Disposition-Specification.json",
+      "version": "1.0-baseline",
+      "sha256": "63d1fb68bcebb63e5282c7314d03038a93db0a836a6c8b1a08a41c2cd70a43db",
+      "mutated": false
+    }
+  },
+  "global_blocker": {
+    "id": "BD-STATE",
+    "status": "resolved-by-parent-ADR-03",
+    "closure_role": "contract-hardening-and-evidence; not a new blocker decision",
+    "readiness_change": "none"
+  },
+  "scope": {
+    "included": [
+      "CoreWellFormed and boundary-predicate separation",
+      "provider provenance and ProviderChoiceSpec",
+      "active-store disjointness and checked merge",
+      "active-fold order-independence contract",
+      "static-field projection and checkedModify gate",
+      "committed support and lifecycle-policy contract hooks",
+      "registry/ambient frame contracts",
+      "TrackedContext coeffect projection bridge"
+    ],
+    "excluded_decisions": [
+      "BD-NAMES",
+      "BD-ITER",
+      "BD-STAGING",
+      "BD-CONTROL",
+      "BD-SCOPED",
+      "mutable rootStore or duplicate global coeffect cache",
+      "new state carrier or observation boundary"
+    ],
+    "compile_harness_mode": "standalone mirror of the accepted ADR-03 carrier; do not import beside a production module that redeclares CordisADR03 names"
+  },
+  "contracts": {
+    "well_formedness": {
+      "core": [
+        "ParentClosed",
+        "ParentAcyclic",
+        "TableConfined",
+        "ProvisionDisjoint",
+        "LifecycleCoherent",
+        "CommittedViewClosed",
+        "CommittedProvidersClosed"
+      ],
+      "boundary_parameters": [
+        "rootSpec",
+        "declarationSpec"
+      ],
+      "note": "ParentRooted and DeclarationConsistency are supplied at the boundary; they are not silently selected here."
+    },
+    "provider": {
+      "active_providers": "{ n : IncarnationId // ProvidesNow policy s.registry n k }",
+      "active_binding": "provider ID plus value, provider witness, and global lookup witness",
+      "choice_spec": "CoreWellFormed policy s implies (providerOf policy s k = some n iff ProvidesNow policy s.registry n k)",
+      "uniqueness_spec": "under CoreWellFormed policy s, two ProvidesNow witnesses for one key imply equal incarnation IDs",
+      "choice_executable": false
+    },
+    "aggregation": {
+      "store_disjoint": "forall k, k in sigma -> k in tau -> False",
+      "checked_merge": "some (sigma union tau) on disjointness, none on overlap",
+      "fold_contract": "activeUnionAux is invariant under permutation of the registry-key traversal",
+      "executable_fold_proved": false
+    },
+    "static_update": {
+      "static_fields": [
+        "component",
+        "behavior",
+        "requirements",
+        "provisions",
+        "parent"
+      ],
+      "same_static": "equality of staticOf projections",
+      "checked_modify": "Option RawState; succeeds only when the static projection is preserved",
+      "wf_preservation_proved": false
+    },
+    "lifecycle_and_committed": {
+      "policy_soundness_hook": "providesNow life = true iff IsActive life",
+      "committed_support_closed": "every committed-view key is present in the named provider localStore",
+      "table_freeze": "transition-level premise deferred to BD-STAGING/BD-CONTROL",
+      "concrete_phase_constructors": "deferred"
+    },
+    "frames_and_observation": {
+      "registry_frame_at": "non-actor registry entries are unchanged",
+      "static_frame_at": "actor static projection is unchanged",
+      "local_store_frame": "provider localStore remains unchanged across a guarded interval",
+      "tracked_context": "state plus accumulator, with coeffect equal to activeUnion of state",
+      "observation_boundary": "ADR-03 CoreStateObs and ADR-01/02 relations unchanged"
+    },
+    "theorem_hypothesis_discipline": "Expose acyclicity explicitly in theorem signatures where required; do not rely on an implicit WellFormed premise as a substitute."
+  },
+  "acceptance_checks": [
+    {
+      "id": "STATE-CLOSE-01",
+      "check": "Reuse accepted positive finite carrier; no recursive closure field",
+      "status": "represented; compiler validated"
+    },
+    {
+      "id": "STATE-CLOSE-02",
+      "check": "CoreWellFormed separated from root/catalog boundary predicates",
+      "status": "represented; boundary proofs deferred"
+    },
+    {
+      "id": "STATE-CLOSE-03",
+      "check": "Provider provenance and provider-choice specification are explicit",
+      "status": "represented; adequacy proof pending"
+    },
+    {
+      "id": "STATE-CLOSE-04",
+      "check": "Conflict-aware merge and active-fold order contract",
+      "status": "merge equations represented; executable fold theorem pending"
+    },
+    {
+      "id": "STATE-CLOSE-05",
+      "check": "Static-field projection and checked raw update",
+      "status": "represented; WF-preservation pending"
+    },
+    {
+      "id": "STATE-CLOSE-06",
+      "check": "Committed support and lifecycle visibility hooks",
+      "status": "state contract represented; transition freeze deferred"
+    },
+    {
+      "id": "STATE-CLOSE-07",
+      "check": "Registry/ambient frame and Definition-32 projection contracts",
+      "status": "represented"
+    },
+    {
+      "id": "STATE-CLOSE-08",
+      "check": "Pinned Lean compilation of closure spike",
+      "status": "passed; local compiler result accepted as project gate"
+    }
+  ],
+  "readiness_effect": {
+    "affected_nodes": [
+      "D32", "D33", "D43", "D44", "D45", "D46", "D47", "D48", "D49", "D50", "D53", "L55", "D58", "R.full"
+    ],
+    "blocker_subtraction": "none; BD-STATE was already removed by ADR-03",
+    "newly_ready": [],
+    "remaining_blockers_unchanged": true
+  },
+  "validation": {
+    "paper_and_architecture_audit": "completed through parent ADR-03",
+    "json_parse": "completed local final check",
+    "closure_spike": {
+      "artifact": "DeepSeek-Harness-07-ADR-03-BD-STATE-Closure-Spike.lean",
+      "compiler_validation": "passed-local-accepted",
+      "local_check": {
+        "exit_code": 0,
+        "toolchain": "Lean 4.33.0 / Lake 5.0.0-src+d8b1897",
+        "lean_commit": "d8b18978322de05a8f3dba51ef03cf5461676c17",
+        "command": "lake env lean artifacts/DeepSeek-Harness-07-ADR-03-BD-STATE-Closure-Spike.lean"
+      },
+      "required_gate": "lake env lean artifacts/DeepSeek-Harness-07-ADR-03-BD-STATE-Closure-Spike.lean",
+      "gate_disposition": "accepted after project-owner confirmation that local compile is sufficient",
+      "production_proofs": "pending by contract classification"
+    }
+  },
+  "revision_policy": {
+    "editorial_change": "patch version",
+    "contract_proof_or_spike_repair": "revised closure packet/spike",
+    "carrier_root_or_observation_change": "superseding ADR required",
+    "frozen_baselines_must_remain_unchanged": true
+  },
+  "integrity": {
+    "markdown_artifact": "DeepSeek-Harness-07-ADR-03-BD-STATE-Closure-Packet.md",
+    "markdown_sha256": "afb13f41c89a0132b522e3d754ef44f787e3eb3d2d9a9b83bc787f156a83b4a8",
+    "lean_spike_artifact": "DeepSeek-Harness-07-ADR-03-BD-STATE-Closure-Spike.lean",
+    "lean_spike_sha256": "a73fb72b0db408b8c44c5fbefa8cbc5db2366471045a3211b46b7b03d6444c8b",
+    "json_validated": true
+  }
+}

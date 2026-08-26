@@ -1,0 +1,415 @@
+{
+  "metadata": {
+    "artifact_title": "DeepSeek Harness ADR-03: Unified State and Registry Architecture",
+    "decision_id": "ADR-03",
+    "status": "accepted-compiler-validated-user-reported",
+    "artifact_version": "1.1-accepted-compiler-validated-user-reported",
+    "created_on": "2026-08-25",
+    "validation_updated_on": "2026-08-26",
+    "language": "Lean 4 architecture packet with Markdown rationale",
+    "source_title": "Shi, Zhang, and Cui, A Programming Paradigm for Spatiotemporal Composability",
+    "source_sha256": "4d48478dc0b6222d9f74d7db10ee776449b1209eb112632336544d32a49db97f"
+  },
+  "baseline": {
+    "dependency_graph": {
+      "artifact": "DeepSeek-Harness-03-Definition-Theorem-Dependency-Graph.json",
+      "version": "1.0-frozen",
+      "sha256": "8f99db87d7aa4d856657abdaf469d9941d3af7fea88ababd2e58cba49041ded8",
+      "mutated_by_this_decision": false
+    },
+    "disposition_specification": {
+      "artifact": "DeepSeek-Harness-04-Formalization-Disposition-Specification.json",
+      "version": "1.0-baseline",
+      "sha256": "63d1fb68bcebb63e5282c7314d03038a93db0a836a6c8b1a08a41c2cd70a43db",
+      "mutated_by_this_decision": false
+    }
+  },
+  "dependencies": {
+    "ADR-01": {
+      "artifact": "DeepSeek-Harness-05-ADR-01-Equivalence-Architecture",
+      "status": "accepted-compiler-validated-user-reported",
+      "json_sha256": "1963c468ebaca2cd86635e88881ecda373b8278d0895c3805c52717e0a056dd5"
+    },
+    "ADR-02": {
+      "artifact": "DeepSeek-Harness-06-ADR-02-Coeffect-Store-and-Partiality-Architecture",
+      "status": "accepted-compiler-validated-user-reported",
+      "json_sha256": "f1b8e298edb7405a4a67fa10869d621a2bfeab80d5e5cf6a86feb752878699e5"
+    }
+  },
+  "decision": {
+    "resolves": ["BD-STATE"],
+    "supersedes": [],
+    "statement": "Use a positive finite registry raw state with explicit WellFormed/ValidState views; store only data and reified codes/tokens in FiberCell; interpret behavior and recovery externally; derive the core coeffect from active local stores; do not add an implicit mutable rootStore.",
+    "primary_pattern": "positive-finite-registry-state-plus-external-actor-indexed-semantics",
+    "architecture_validation": "accepted-after-paper-and-variance-audit",
+    "implementation_validation": "passed-user-reported-repaired-spike",
+    "semantic_change_policy": "superseding-adr-required",
+    "core_scope": "Section-4-single-realm-core",
+    "root_policy": "empty-seed-core; named immutable-seed extension only"
+  },
+  "global_assumptions": [
+    "Ambient is an external, non-recursive, unkeyed state slice inside the chosen formal boundary.",
+    "Code/token types are declared in a layer that does not depend on RawState; closure captures are reified as data.",
+    "IncarnationId is an abstract identity type with an explicit DecidableEq for finite registry operations; freshness and reuse policy remain BD-NAMES.",
+    "The Section-4 core has no implicit root provider table; root services are ordinary root-parent fibers or a separately named extension.",
+    "External action semantics may be nondeterministic and may quantify over RawState, but no such relation/function is stored recursively in a state cell."
+  ],
+  "alternatives": [
+    {
+      "id": "literal-mu-fixed-point",
+      "decision": "rejected",
+      "reason": "Gamma occurs negatively in Gamma -> Gamma; ordinary Lean strict positivity and ordinary Set fixed-point reading do not support the intended carrier."
+    },
+    {
+      "id": "recursive-state-registry-fiber-closures",
+      "decision": "rejected",
+      "reason": "Recreates the negative State/Registry/Fiber cycle and hides the actor/frame footprint."
+    },
+    {
+      "id": "domain-or-quotient-fixed-point",
+      "decision": "rejected-for-core",
+      "reason": "Overly heavy for finite runtime registries, loses representatives needed by rules, and needs a separate executable refinement."
+    },
+    {
+      "id": "finite-depth-context-tower",
+      "decision": "rejected-as-authoritative",
+      "reason": "Imposes a compile-time nesting bound and complicates dynamic registration; a bounded fragment may be a later lemma."
+    },
+    {
+      "id": "abstract-state-interface-only",
+      "decision": "rejected-as-sole-carrier",
+      "reason": "Cannot expose finite registry, parent, support, provider, and frame facts needed by the calculus."
+    },
+    {
+      "id": "duplicate-global-coeffect-cache",
+      "decision": "rejected",
+      "reason": "Introduces a second mutation path and an unnecessary coherence invariant."
+    },
+    {
+      "id": "implicit-mutable-root-store",
+      "decision": "rejected-in-core",
+      "reason": "Changes D45/T63/T66 empty-state and provider assumptions; an immutable seed needs a named provider-identity extension."
+    },
+    {
+      "id": "complete-iterator-control-dsl-in-cell",
+      "decision": "rejected-for-now",
+      "reason": "Prematurely resolves BD-ITER and BD-CONTROL and can recreate recursive semantic references."
+    },
+    {
+      "id": "positive-finite-registry-external-semantics",
+      "decision": "accepted",
+      "reason": "Preserves positivity and arbitrary finite runtime hierarchy while leaving iterator, staging, control, names, and realms explicit."
+    }
+  ],
+  "state_carrier": {
+    "raw_state": {
+      "ambient": "Ambient",
+      "registry": "Finmap (fun _ : IncarnationId => FiberCell)"
+    },
+    "valid_state": "{ s : RawState // WellFormed s }",
+    "positivity_rule": "RawState and FiberCell contain no RawState-indexed function field; Ambient and all code/token parameters are lexically non-recursive.",
+    "raw_is_permissive": true,
+    "trusted_api": "proof-indexed or Option/Except checked transitions preserve WellFormed; malformed RawState remains representable for counterexamples and intermediate semantics"
+  },
+  "fiber_registry": {
+    "fiber_fields": [
+      "component : ComponentCode",
+      "behavior : BehaviorCode (configured per incarnation)",
+      "requirements : Finset Key",
+      "provisions : Finset Key",
+      "parent : Option IncarnationId",
+      "localStore : Store Value (ADR-02 Finmap)",
+      "retired : Bool",
+      "lifecycle : Life",
+      "accumulator : Option AccumulatorCode",
+      "committed : Option (ProviderView IncarnationId Key)"
+    ],
+    "payload_policy": "Optional accumulator and committed view are normalized lifecycle payload slots linked to Life by LifecycleCoherent; a later lifecycle ADR may make them indexed Life constructors.",
+    "registry_identity": "The Finmap key is the incarnation identity; no internal self field is introduced. Freshness/generation/alpha policy is BD-NAMES.",
+    "provider_view": {
+      "carrier": "Finmap (fun _ : Key => IncarnationId)",
+      "domain": "Finset Key",
+      "invariant": "providers.keys = domain",
+      "target_type": "Option (ProviderView IncarnationId Key)",
+      "missing_meaning": "retired or currently unsatisfied; no default provider"
+    }
+  },
+  "well_formedness": [
+    {
+      "name": "ParentClosed",
+      "requirement": "Every non-root parent pointer names a registry entry."
+    },
+    {
+      "name": "ParentAcyclic",
+      "requirement": "The transitive parent-edge relation has no cycle."
+    },
+    {
+      "name": "ParentRooted",
+      "requirement": "The selected names/registration boundary supplies the distinguished root convention; the spike exposes the closed/acyclic forest and defers the root witness to BD-NAMES.",
+      "status": "boundary-obligation-deferred-to-BD-NAMES"
+    },
+    {
+      "name": "TableConfined",
+      "requirement": "Support of each localStore is a subset of that cell's provisions."
+    },
+    {
+      "name": "ProvisionDisjoint",
+      "requirement": "Distinct current incarnation keys have disjoint declared provision sets; vestigial retired entries remain until O-Remove."
+    },
+    {
+      "name": "LifecycleCoherent",
+      "requirement": "installed implies accumulator and committed payloads; either payload implies installed; providesNow implies installed and accumulator; committedVisible implies committed and accumulator; a retired-but-still-Active fiber may continue providing until L-Leave."
+    },
+    {
+      "name": "CommittedViewClosed",
+      "requirement": "Stored view domain equals requirements."
+    },
+    {
+      "name": "CommittedProvidersClosed",
+      "requirement": "Every provider ID named by a stored view is an installed registry entry."
+    },
+    {
+      "name": "DeclarationConsistency",
+      "requirement": "If component is a catalog identifier, its catalog specification agrees with the authoritative requirements/provisions fields.",
+      "status": "catalog-dependent-obligation"
+    }
+  ],
+  "derived_views": {
+    "contributes_now": "policy.providesNow lifecycle = true; retirement is intentionally not included because O-Retire can precede L-Leave.",
+    "active_coeffect": "disjoint union of localStore for fibers whose contributesNow predicate holds",
+    "aggregation": {
+    "spike": "noncomputable finite-key traversal semantic representative",
+      "production": "absorbing Option Store merge with Finmap.foldl and an unconditional swap/commutativity proof",
+      "validity": "WellFormed implies no overlap and hence the fold result is some store; raw Finmap.union left bias is observationally irrelevant under disjointness"
+    },
+    "provider_notions": [
+      "declared possible provision k ∈ provisions",
+      "actual local support k ∈ localStore",
+      "current active provider k present in active coeffect and contributing cell"
+    ],
+    "provider_lookup": "Option IncarnationId, backed by a ProviderOf relation and a uniqueness theorem under TableConfined + ProvisionDisjoint",
+    "global_lookup": "lookup k (activeUnion state)",
+    "committed_lookup": "follow a consumer's committed ProviderView to the provider's localStore, including guarded Unloading",
+    "lifecycle_projection_cases": [
+      "Active -> Unloading removes the provider contribution immediately",
+      "Inactive -> Reloading contributes none",
+      "Reloading -> Active adds the local table",
+      "guarded Unload applies the accumulator after provider withdrawal"
+    ],
+    "root_extension": "seededCoeffect seed state = seed ∪ activeUnion state is store-observation-only unless an extension introduces ProviderId = root | fiber id and re-proves provider/guard laws"
+  },
+  "operations_and_frames": {
+    "raw_operations": [
+      "insertFiber",
+      "modifyFiber",
+      "removeFiber"
+    ],
+    "frame_obligations": [
+      "registry/control updates preserve Ambient",
+      "modifyFiber n changes only the cell at n",
+      "lookup at m ≠ n is unchanged",
+      "removeFiber n leaves every other entry unchanged",
+      "local-table updates affect active coeffect only through n's contribution",
+      "actor actions may change Ambient only within an explicit read/write slice"
+    ],
+    "factorization": "A deterministic step is an external ControlEdit ∘ StateMap; nondeterministic rules carry labelled witnesses rather than storing functions in state."
+  },
+  "action_code_boundary": {
+    "semantics_shape": "forward : IncarnationId → BehaviorCode → RawState → RawState → AccumulatorCode → Prop; inverse : IncarnationId → AccumulatorCode → RawState → RawState → Prop",
+    "actor_indexing": true,
+    "nondeterminism": "allowed by relation-valued semantics; iterator/failure/control result payloads are deferred",
+    "stored_closure_prohibition": true,
+    "required_laws": [
+      "actor-indexed D48 confinement/read noninterference",
+      "ADR-01 selected-inverse coherence and recovery",
+      "WellFormed preservation",
+      "explicit code-denotation/equivalence bridge when a semantic observation compares behavior tokens"
+    ]
+  },
+  "observation_boundary": {
+    "CoreStateObs": "StoreObs R (activeUnion policy s) (activeUnion policy t)",
+    "LifecycleObs": "CoreStateObs plus explicit lifecycle/control observation",
+    "EraseControl": "separately named Section-4 recovery relation; not silently identified with LifecycleObs",
+    "ambient_policy": "CoreStateObs forgets Ambient; use a stronger AmbientObs when ambient state is observed",
+    "adr01_adr02_bridge": "Use ADR-01 explicit relation values and ADR-02 StoreObs/Option definedness; code-token denotation relations are explicit obligations."
+  },
+  "paper_repair_manifest": {
+    "D32": "Replace literal negative μΓ by TrackedContext plus finite parent registry and external accumulator/action semantics; prove a representation/refinement theorem rather than definitional equality.",
+    "D33": "Lift ADR-02 store observation through active coeffect projection.",
+    "D43": "Finite requirements/provisions and behavior codes with explicit frame predicates.",
+    "D44": "Lifecycle-parameterized FiberCell with per-incarnation behavior and optional accumulator/committed payload slots.",
+    "D45": "Finite registry, parent invariants, active-table union, Option provider lookup, and uniqueness obligations.",
+    "D46": "Option ProviderView; target eligibility depends on retirement and satisfaction, not current installed phase; the spike's targetView is a classical-choice semantic representative.",
+    "D47": "Registration/retirement are external control edits with identity witnesses; freshness remains BD-NAMES.",
+    "D48": "Actor-indexed external relation plus explicit write/read frame obligations.",
+    "D49": "Separate installed, providesNow, and committed visibility; concrete phases await later ADRs.",
+    "D50": "Relied-upon relation over finite installed registry and committed provider views.",
+    "D53": "Split traces, episodes, state-map/control-edit witnesses, and observation relations over one raw carrier.",
+    "L55": "State carrier is available; successor invariance still needs control and relation-respect decisions.",
+    "D58": "WellFormed exposes parent/support/disjointness/view closure; root/freshness policy remains BD-NAMES.",
+    "R.full": "One state carrier and labelled external relations; full ten-rule semantics awaits ITER/STAGING/CONTROL/NAMES."
+  },
+  "affected_disposition_nodes": {
+    "baseline_direct_set": [
+      "D32", "D33", "D43", "D44", "D45", "D46", "D47", "D48", "D49", "D50", "D53", "L55", "D58", "R.full"
+    ],
+    "resolved_blocker_removed": "BD-STATE",
+    "remaining_blockers": {
+      "D32": [],
+      "D33": [],
+      "D43": ["BD-ITER"],
+      "D44": ["BD-ITER", "BD-STAGING", "BD-NAMES"],
+      "D45": ["BD-NAMES"],
+      "D46": ["BD-STAGING"],
+      "D47": ["BD-CONTROL", "BD-NAMES"],
+      "D48": ["BD-ITER"],
+      "D49": ["BD-ITER", "BD-STAGING", "BD-CONTROL"],
+      "D50": [],
+      "D53": ["BD-CONTROL", "BD-NAMES"],
+      "L55": ["BD-CONTROL"],
+      "D58": ["BD-NAMES"],
+      "R.full": ["BD-ITER", "BD-STAGING", "BD-CONTROL", "BD-NAMES"]
+    },
+    "newly_blocker_free": ["D32", "D33", "D50"],
+    "readiness_rule": "Start from immutable Harness-04 blocker sets and remove only BD-STATE; preserve all other blockers and dependency edges."
+  },
+  "coding_rules": [
+    "Use ADR-02 Store/Finmap APIs; do not introduce a second downstream store carrier.",
+    "Keep Ambient and all code/token parameters lexically non-recursive.",
+    "Pass IncarnationId to action semantics; do not identify fibers solely by component code.",
+    "Keep RawState and ValidState distinct; checked failures have no fabricated successor proof.",
+    "Derive core coeffect from active local stores; no cached mutable global store.",
+    "Use Option for absent providers/targets; defaults are not providers.",
+    "Prove active-union order independence explicitly; left-biased notation is not a proof.",
+    "Keep declared provision, local support, active presence, installed status, and committed visibility distinct.",
+    "Use CoreStateObs, LifecycleObs, and EraseControl as separate named relations.",
+    "Keep StateMap/ControlEdit as external witnesses, never recursive state fields.",
+    "Do not make hidden final choices for BD-NAMES, BD-ITER, BD-STAGING, BD-CONTROL, or BD-SCOPED."
+  ],
+  "acceptance_checks": [
+    {"id":"STATE-AC-01","check":"positive carrier with no literal μΓ or State-indexed closure","architecture_status":"passed-by-variance-audit","spike_status":"represented-user-reported-compile"},
+    {"id":"STATE-AC-02","check":"finite registry and lifecycle-parameterized fiber shell","architecture_status":"passed","spike_status":"represented-user-reported-compile"},
+    {"id":"STATE-AC-03","check":"parent/support/provision/lifecycle/view well-formedness predicates plus explicit rooted/catalog boundary obligations","architecture_status":"passed","spike_status":"core-predicates-represented-user-reported-compile; rooted/catalog obligations-deferred"},
+    {"id":"STATE-AC-04","check":"active-only coeffect projection, provider uniqueness, and order-independence contract","architecture_status":"passed-by-design-audit","spike_status":"noncomputable-representative-plus-contract-compiled; executable-fold-proof-pending"},
+    {"id":"STATE-AC-05","check":"Option target/committed views with finite domain proof and provider-closure boundary","architecture_status":"passed","spike_status":"represented-user-reported-compile"},
+    {"id":"STATE-AC-06","check":"persistent registry update and frame laws","architecture_status":"passed","spike_status":"representative-lemmas-user-reported-compile"},
+    {"id":"STATE-AC-07","check":"CoreStateObs lift through ADR-01/ADR-02 observation APIs","architecture_status":"passed","spike_status":"represented-user-reported-compile"},
+    {"id":"STATE-AC-08","check":"external actor-indexed action relation and WellFormed-preservation premise","architecture_status":"passed","spike_status":"represented-user-reported-compile"},
+    {"id":"STATE-AC-09","check":"explicit code-denotation/equivalence bridge hook","architecture_status":"passed","spike_status":"relation-hook-compiled; semantic-law-obligation-pending"},
+    {"id":"STATE-AC-10","check":"no hidden ITER/STAGING/CONTROL/NAMES/SCOPED decision","architecture_status":"passed","spike_status":"no-concrete-choice"},
+    {"id":"STATE-AC-11","check":"affected-node set and blocker subtraction match Harness-04","architecture_status":"passed","spike_status":"machine-checked-locally"},
+    {"id":"STATE-AC-12","check":"pinned Lean compilation of companion spike","architecture_status":"passed-user-reported","spike_status":"repaired-spike-and-project-build-passed-user-reported"}
+  ],
+  "validation": {
+    "paper_audit": "completed",
+    "variance_and_cycle_audit": "completed",
+    "mathlib_api_audit": {
+      "status": "completed",
+      "sources": [
+        "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finmap.html",
+        "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Defs.html",
+        "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Dedup.html"
+      ]
+    },
+    "local_checks": {
+      "json_parse": "completed",
+      "baseline_hashes": "recorded",
+      "affected_set_comparison": "completed"
+    },
+    "lean_spike": {
+      "artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture-Spike.lean",
+      "scope": [
+        "positive finite registry and FiberCell shell",
+        "lifecycle policy and active-table projection representative",
+        "parent/support/disjointness/lifecycle/view predicates",
+        "provider uniqueness theorem boundary",
+        "target and committed lookup shells",
+        "persistent update/frame lemmas",
+        "TrackedContext and actor-indexed ActionSemantics",
+        "StateMap/ControlEdit factorization",
+        "ADR-01/ADR-02 StoreObs/CoreStateObs boundary"
+      ],
+      "creation_environment": "Lean and Lake unavailable for initial artifact creation",
+      "compiler_validation": "passed-user-reported-repaired-spike-2026-08-26",
+      "toolchain": "Lean 4.33.0; project current locked Mathlib/Lake environment (exact lock revision not recorded)",
+      "toolchain_recorded": "partial",
+      "project_build": "passed-user-reported; Build completed successfully (8738 jobs)",
+      "diagnostics": "repaired spike: no errors and no warnings",
+      "placeholder_scan": "no matches for sorry/admit/axiom",
+      "historical_artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture-Spike-v1.0-compiler-pending.lean",
+      "fix_notes_artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture-Spike-Fix-Notes.md",
+      "validation_note": "The supplied repaired source compiles. The repair is an elaboration/API and proof-script correction: explicit specialization of parameterized carriers and local notation, plus type annotations and explicit case handling. The report states that the ADR-03 carrier and semantic decision were unchanged.",
+      "reproducibility_followup": "Record the exact Mathlib/Lake lock revision and preserve the raw compiler/build logs.",
+      "required_gate": "lake env lean artifacts/DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture-Spike.lean",
+      "required_metadata_after_pass": "already promoted; exact Mathlib/Lake lock revision and raw logs remain to be recorded"
+    }
+  },
+  "repair_record": {
+    "source": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture-Spike-Fix-Notes.md",
+    "classification": "elaboration-api-and-proof-script-repair",
+    "semantic_decision_changed": false,
+    "root_cause": "Implicit generalization left the Fiber parameters unresolved at the Registry definition, causing instance search to see DecidableEq ?m.",
+    "changes": [
+      "Explicitly specialize Fiber, Registry, RawState, TrackedContext, and ActionSemantics parameters.",
+      "Add local notation for specialized carriers.",
+      "Make Bool branching, state annotations, lookup cases, and unused parameters explicit where required by elaboration.",
+      "Generalize StateMap and ControlEdit as ordinary State -> State constructors and specialize call sites."
+    ],
+    "reported_non_changes": [
+      "WellFormed logic and acyclicity assumptions",
+      "active coeffect and retirement timing semantics",
+      "committed-provider and target-eligibility distinctions",
+      "Core versus full-Cordis boundary"
+    ],
+    "api_compatibility_note": "Former bare aliases are no longer accepted; downstream callers must provide the carrier parameters. This is a surface API correction, not a new state architecture."
+  },
+  "known_followups": [
+    "Consider moving DecidableEq Key requirements from carrier declarations to operations/theorems.",
+    "Add ParentRooted and catalog DeclarationConsistency at the appropriate boundary.",
+    "State a lifecycle-policy soundness law connecting providesNow to the selected Active phase.",
+    "Prove WF-relative adequacy/specification lemmas for classical-choice providerOf and targetView.",
+    "Add committed-table support/freeze invariants and checked static-field-preserving updates.",
+    "Prove actor frame/confinement laws and executable traversal-order-independent aggregation."
+  ],
+  "non_decisions": [
+    "BD-NAMES freshness/generation/alpha/identity-reuse policy",
+    "BD-ITER iterator and continuation/failure carrier",
+    "BD-STAGING commit protocol",
+    "BD-CONTROL asynchronous scheduler, failure labels, and full lifecycle relation",
+    "BD-SCOPED realm/interception representation",
+    "final Lean module/import/namespace names",
+    "deterministic evaluator versus finite-result-list versus relation implementation for action codes",
+    "application-specific component/error/ambient observation types",
+    "runtime mutable object identity, proxies, host resources, and disposer closure implementation",
+    "mutable or overlapping root store in the Section-4 core"
+  ],
+  "revision": {
+    "editorial_change": "allowed-with-recorded-patch-version",
+    "semantic_change": "requires-superseding-adr",
+    "promotion_rule": "after a user-reported pinned compilation of a candidate revision, promote that revision to compiler-validated status and record the toolchain; if source repair was required, retain the prior source as historical",
+    "reopen_triggers": [
+      "positive shell fails strict positivity or requires unsafe casts",
+      "registry cannot state D45/D48/D53/T63 parent/frame/provider invariants",
+      "active projection cannot be made traversal-order independent under explicit disjointness",
+      "later theorem requires an actually infinite reachable registry/coeffect support",
+      "faithful core requires an implicit mutable root store or duplicate global cache",
+      "action codes necessarily embed unresolved iterator/control choices",
+      "committed lookup cannot preserve guarded Unloading visibility",
+      "scoped extension lacks a lookup/update-faithful flat embedding",
+      "runtime refinement makes closure identity or untracked effects part of the core observation"
+    ],
+    "workflow_rule": "derive readiness from immutable baselines plus accepted/superseding ADRs and explicitly recorded blockers; never rewrite Harness-03/04 in place"
+  },
+  "integrity": {
+    "markdown_artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture.md",
+    "markdown_sha256": "6cb8553b7ab43cdf3b5ace97598decd7d5150e185073d0a65c91582641d82bb2",
+    "lean_spike_artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture-Spike.lean",
+    "lean_spike_sha256": "96f75e4b77463790fdb28762df11dac5e079e1a244172fcb7dabe89b07ba71cc",
+    "historical_lean_spike_artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture-Spike-v1.0-compiler-pending.lean",
+    "historical_lean_spike_sha256": "56a3d7461d46787d08b32814a287fc28db63c803311fca2d713dfc6eaab74252",
+    "fix_notes_artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture-Spike-Fix-Notes.md",
+    "fix_notes_sha256": "72bf9d948e010be74c7d09b48cd50e70909963986bbf478b72c8e6ed6f0de336",
+    "json_validated": true,
+    "affected_node_set_matches_baseline": true
+  }
+}

@@ -1,0 +1,463 @@
+{
+  "metadata": {
+    "artifact_title": "DeepSeek Harness ADR-01: Equivalence Architecture",
+    "decision_id": "ADR-01",
+    "created_on": "2026-08-25",
+    "artifact_version": "1.0-accepted",
+    "language": "en",
+    "source_title": "A Programming Paradigm for Spatiotemporal Composability",
+    "source_sha256": "4d48478dc0b6222d9f74d7db10ee776449b1209eb112632336544d32a49db97f"
+  },
+  "baseline": {
+    "dependency_graph": {
+      "artifact": "DeepSeek-Harness-03-Definition-Theorem-Dependency-Graph.json",
+      "version": "1.0-frozen",
+      "sha256": "8f99db87d7aa4d856657abdaf469d9941d3af7fea88ababd2e58cba49041ded8",
+      "mutated_by_this_decision": false
+    },
+    "disposition_specification": {
+      "artifact": "DeepSeek-Harness-04-Formalization-Disposition-Specification.json",
+      "version": "1.0-baseline",
+      "sha256": "63d1fb68bcebb63e5282c7314d03038a93db0a836a6c8b1a08a41c2cd70a43db",
+      "mutated_by_this_decision": false
+    }
+  },
+  "decision": {
+    "status": "accepted",
+    "architecture_validation": "accepted",
+    "implementation_validation": "pending-pinned-lean-compilation",
+    "resolves": [
+      "BD-EQUIV"
+    ],
+    "statement": "Use one raw exact computational algebra with an explicit-equivalence, relation-parametric correctness layer; pass relation values explicitly, preserve exact structural equations, use pointwise relations for returned functions, and recover equality by specialization.",
+    "primary_pattern": "raw-exact-algebra-plus-explicit-relation-laws",
+    "global_setoid_instance": "forbidden-in-core",
+    "quotient_execution_state": "forbidden",
+    "quotient_derived_view": "allowed-after-congruence",
+    "law_representation": "predicate-first-with-optional-boundary-bundle",
+    "semantic_change_policy": "superseding-adr-required"
+  },
+  "alternatives": [
+    {
+      "id": "A",
+      "name": "equality-first-then-transport",
+      "disposition": "rejected",
+      "reason": "L38 is not automatic transport; it would duplicate relation-level independence, recovery, and iterator proofs."
+    },
+    {
+      "id": "B",
+      "name": "explicit-relation-laws-over-raw-functions",
+      "disposition": "accepted",
+      "reason": "It preserves exact computation, proves semantic closure once, permits multiple relations on one carrier, and recovers equality as an instance."
+    },
+    {
+      "id": "C",
+      "name": "quotient-first-execution",
+      "disposition": "rejected-for-core",
+      "reason": "Quotient descent requires the same congruence obligations, hides operational representatives, and cannot select among incomparable Section 4 relations."
+    },
+    {
+      "id": "D",
+      "name": "single-implicit-setoid-instance",
+      "disposition": "rejected",
+      "reason": "The same state carrier has several simultaneous and incomparable observation relations."
+    },
+    {
+      "id": "E",
+      "name": "proof-bundled-effects-only",
+      "disposition": "rejected-as-primary-carrier",
+      "reason": "Proof-field equality impedes raw algebra and rewriting; bundles remain permitted at trusted admission boundaries."
+    }
+  ],
+  "normative_layers": [
+    {
+      "id": "raw-exact",
+      "comparison": "Lean equality",
+      "owns": [
+        "raw endomorphisms",
+        "effect results",
+        "effect composition and unit",
+        "twisted pair multiplication",
+        "track and recover computations",
+        "effect lift and projections",
+        "operational constructor tags and exact factorization"
+      ]
+    },
+    {
+      "id": "relation-law",
+      "comparison": "explicit RelSpec",
+      "owns": [
+        "local recovery",
+        "successor congruence",
+        "selected-inverse coherence",
+        "returned-inverse properness",
+        "observational commutation",
+        "semantic recovery endpoints",
+        "iterator output relators"
+      ]
+    },
+    {
+      "id": "derived-quotient",
+      "comparison": "quotient equality",
+      "owns": [
+        "optional extensional views after relation-respect proofs"
+      ],
+      "operational": false
+    }
+  ],
+  "api_contracts": {
+    "RelSpec": {
+      "carrier": "alpha",
+      "fields": [
+        "rel : alpha -> alpha -> Prop",
+        "refl : Reflexive rel",
+        "symm : Symmetric rel",
+        "trans : Transitive rel"
+      ],
+      "passing_mode": "explicit-value"
+    },
+    "RespectsOn": "forall x y, R x y -> S (f x) (f y)",
+    "Respects": "RespectsOn S.rel S.rel f",
+    "PointwiseRel": "forall x, S.rel (f x) (g x)",
+    "CrossRel": "forall x y, S.rel x y -> S.rel (f x) (g y)",
+    "EffectResultRel": "S.rel left.state right.state and PointwiseRel S left.undo right.undo",
+    "IsLawfulEffect": {
+      "run_respects": "RespectsOn S.rel (EffectResultRel S) e",
+      "undo_respects": "forall gamma, Respects S (e gamma).undo",
+      "recovers": "forall gamma, S.rel ((e gamma).undo (e gamma).state) gamma"
+    },
+    "equality_specialization": "IsLawfulEffect (equality Gamma) e iff repaired Definition 8 witness",
+    "operation_result": {
+      "definedness": "exactly equal",
+      "success_failure_tag": "exactly equal",
+      "successor": "selected state/value relation",
+      "selected_inverse": "PointwiseRel",
+      "each_inverse": "Respects",
+      "ordinary_outcome": "exactly equal unless a separate outcome relation is explicitly supplied"
+    },
+    "iterator_extension": {
+      "required": true,
+      "relates": [
+        "successor state",
+        "selected inverse",
+        "continuation"
+      ],
+      "continuation_comparison": "explicit iterator relation or bisimulation",
+      "option_tags": "exact",
+      "failure_tags": "exact by default"
+    }
+  },
+  "relation_roles": [
+    {
+      "project_name": "KeyObs",
+      "paper_notation": "simeq_k",
+      "paper_nodes": [
+        "D24",
+        "D33"
+      ],
+      "role": "per-key value equivalence"
+    },
+    {
+      "project_name": "StoreObs",
+      "paper_notation": "simeq",
+      "paper_nodes": [
+        "D33"
+      ],
+      "role": "same domain with pointwise KeyObs bindings"
+    },
+    {
+      "project_name": "CoreStateObs",
+      "paper_notation": "simeq",
+      "paper_nodes": [
+        "D33"
+      ],
+      "role": "state equivalence induced solely through the coeffect projection"
+    },
+    {
+      "project_name": "LifecycleObs",
+      "paper_notation": "simeq",
+      "paper_nodes": [
+        "D53"
+      ],
+      "role": "separately named conjunction of CoreStateObs, exact registry-domain/control observations, and lifted function/iterator relations"
+    },
+    {
+      "project_name": "OpTestEq",
+      "paper_notation": "approx_A",
+      "paper_nodes": [
+        "D34",
+        "L35"
+      ],
+      "role": "operation-test indistinguishability; only weakly admissible without selected-inverse coherence"
+    },
+    {
+      "project_name": "EraseControl",
+      "paper_notation": "approx",
+      "paper_nodes": [
+        "D53",
+        "T61"
+      ],
+      "role": "exact effect/data comparison while designated registry control artifacts are ignored",
+      "relation_to_LifecycleObs": "no-refinement-assumed-either-direction"
+    },
+    {
+      "project_name": "NameRenaming",
+      "paper_notation": "fresh-name renaming",
+      "paper_nodes": [
+        "L56",
+        "T73"
+      ],
+      "role": "equivariance action or refinement principle; not a default state equivalence"
+    }
+  ],
+  "independence_contract": {
+    "raw_generated_monoid": "exact endomorphism submonoid",
+    "exact_commutation": "f composed g equals g composed f",
+    "observational_commutation": "PointwiseRel S (f composed g) (g composed f)",
+    "relational_generator_closure_requires": "every generator Respects S",
+    "foreign_transform_inverse_stability": "for h in the other effect's generated monoid, PointwiseRel S between inverses returned at h(gamma) and gamma",
+    "foreign_transform_stability_is_additional": "not implied by IsLawfulEffect.run_respects because h(gamma) need not be S-related to gamma",
+    "related_input_inverse_coherence": "IsLawfulEffect.run_respects compares selected inverses only when the two run inputs are S-related",
+    "symmetry": "required"
+  },
+  "l35_adjudication": {
+    "finding_id": "F-L35-INVERSE",
+    "paper_inference": "fixed-generator tests imply pointwise coherence of different inverses selected at related inputs",
+    "paper_inference_status": "rejected",
+    "base_test_observation": {
+      "can_observe": [
+        "definedness",
+        "ordinary outcomes",
+        "state reached by each fixed forward generator",
+        "state reached by each fixed yielded-inverse generator"
+      ],
+      "does_not_by_itself_observe": "cross-run pointwise agreement of dynamically selected inverses on an arbitrary third input"
+    },
+    "weak_operation_respects": [
+      "definedness stability",
+      "related successors",
+      "equal outcomes",
+      "each fixed or returned inverse individually preserves the relation"
+    ],
+    "selected_inverse_coherent": "related inputs select pointwise-related inverse functions",
+    "full_operation_respects": "WeakOperationRespects and SelectedInverseCoherent",
+    "replacement_theorems": [
+      "OpTestEq_is_equivalence",
+      "OpTestEq_is_coarsest_weak",
+      "full_respect_of_testEq_with_selected_inverse_coherence",
+      "finite_countermodel_weak_does_not_imply_selected_inverse_coherence"
+    ],
+    "future_observer_strengthening": "allowed to discharge the coherence hypothesis but may not weaken IsLawfulEffect"
+  },
+  "l38_adjudication": {
+    "literal_textual_replacement_theorem": false,
+    "delivery_form": "theorem manifest plus generic closure and Eq/CoreStateObs/LifecycleObs specializations",
+    "exact_raw_nodes": [
+      "D1",
+      "D2",
+      "D3",
+      "T4",
+      "T5",
+      "D6",
+      "D9",
+      "T10",
+      "D12",
+      "T13",
+      "T14"
+    ],
+    "mixed_exact_and_relational_nodes": [
+      "T7",
+      "T15",
+      "L18"
+    ],
+    "generic_relation_nodes": [
+      "D8",
+      "T11",
+      "T16",
+      "D19",
+      "T20",
+      "C21",
+      "D37"
+    ],
+    "specializations": [
+      "equality",
+      "CoreStateObs",
+      "LifecycleObs"
+    ]
+  },
+  "affected_disposition_nodes": {
+    "count": 36,
+    "numbered_count": 35,
+    "auxiliary_count": 1,
+    "all": [
+      "D8",
+      "T11",
+      "T15",
+      "T16",
+      "D19",
+      "T20",
+      "C21",
+      "D23",
+      "D24",
+      "D29",
+      "D31",
+      "D32",
+      "D33",
+      "D34",
+      "L35",
+      "D36",
+      "D37",
+      "L38",
+      "D39",
+      "T40",
+      "D41",
+      "T42",
+      "D48",
+      "D51",
+      "D52",
+      "D53",
+      "L55",
+      "L57",
+      "D60",
+      "T61",
+      "C62",
+      "T64",
+      "L71",
+      "L72",
+      "T73",
+      "R.fail"
+    ],
+    "effective_readiness_rule": "remove only BD-EQUIV from each node's blocker set; preserve every other blocker and every frozen dependency edge"
+  },
+  "coding_rules": [
+    "Expose the selected relation explicitly in every semantic theorem signature.",
+    "Do not select theorem meaning through a global Setoid instance in core files.",
+    "Do not execute raw semantics on quotients.",
+    "Compare function-valued fields pointwise at the selected relation.",
+    "Provide Respects proofs for transformations used in relational composites or generated monoids.",
+    "Index every inverse witness by the run that returned that inverse.",
+    "Preserve definedness and exact outcome or control tags unless a separate relation is supplied.",
+    "Name CoreStateObs, LifecycleObs, and EraseControl separately; name LifecycleObs and EraseControl when both occur in a Section 4 theorem.",
+    "Generate equality and observational variants by specialization, not copied proofs.",
+    "Require a proof of selected-inverse coherence for any claim of full operation admissibility."
+  ],
+  "acceptance_checks": [
+    {
+      "id": "EQ-AC-01",
+      "check": "separate raw exact algebra and semantic relation laws",
+      "architecture_status": "passed",
+      "implementation_status": "represented-in-spike"
+    },
+    {
+      "id": "EQ-AC-02",
+      "check": "support multiple relations on one carrier without global instance choice",
+      "architecture_status": "passed",
+      "implementation_status": "represented-in-spike"
+    },
+    {
+      "id": "EQ-AC-03",
+      "check": "distinguish Respects, PointwiseRel, and CrossRel",
+      "architecture_status": "passed",
+      "implementation_status": "bridge-lemmas-manually-audited"
+    },
+    {
+      "id": "EQ-AC-04",
+      "check": "include successor relation, selected-inverse coherence, inverse properness, and local recovery",
+      "architecture_status": "passed",
+      "implementation_status": "represented-in-spike"
+    },
+    {
+      "id": "EQ-AC-05",
+      "check": "close lawful effects under exact sequential composition",
+      "architecture_status": "passed-by-manual-proof-audit",
+      "implementation_status": "pending-lean-compilation"
+    },
+    {
+      "id": "EQ-AC-06",
+      "check": "recover repaired Definition 8 at equality",
+      "architecture_status": "passed-by-manual-proof-audit",
+      "implementation_status": "pending-lean-compilation"
+    },
+    {
+      "id": "EQ-AC-07",
+      "check": "do not admit L35 selected-inverse inference",
+      "architecture_status": "passed",
+      "implementation_status": "countermodel-is-downstream-L35-work-item"
+    },
+    {
+      "id": "EQ-AC-08",
+      "check": "realize L38 without theory duplication or weakening structural equations",
+      "architecture_status": "passed",
+      "implementation_status": "theorem-manifest-fixed"
+    },
+    {
+      "id": "EQ-AC-09",
+      "check": "separate D33 CoreStateObs, D53 LifecycleObs, both paper uses of approx, and name renaming",
+      "architecture_status": "passed",
+      "implementation_status": "concrete-definitions-await-other-adrs"
+    },
+    {
+      "id": "EQ-AC-10",
+      "check": "constrain iterator and failure output relators",
+      "architecture_status": "passed",
+      "implementation_status": "carrier-awaits-BD-ITER"
+    },
+    {
+      "id": "EQ-AC-11",
+      "check": "keep quotients out of execution state",
+      "architecture_status": "passed",
+      "implementation_status": "no-quotient-in-spike"
+    }
+  ],
+  "validation": {
+    "paper_audit": "completed",
+    "architecture_comparison": "completed",
+    "lean_spike": {
+      "artifact": "DeepSeek-Harness-05-ADR-01-Equivalence-Architecture-Spike.lean",
+      "scope": [
+        "explicit relation package",
+        "relation liftings",
+        "lawful effect record",
+        "sequential closure proof",
+        "equality specialization",
+        "observation-kernel specialization",
+        "explicit relation conjunction"
+      ],
+      "manual_type_audit": "completed",
+      "compiler_validation": "not-run-lean-and-lake-unavailable",
+      "mandatory_gate": "compile in project pinned toolchain before production import"
+    }
+  },
+  "non_decisions": [
+    "BD-STATE concrete unified state",
+    "BD-COEFFECT dependent map and partiality carrier",
+    "BD-SCOPED realm and interception representation",
+    "BD-ITER iterator carrier",
+    "D34 concrete typed test syntax",
+    "application-specific per-key equivalences",
+    "action-code representation breaking recursive state cycles",
+    "Lean module names and namespaces",
+    "tactic policy",
+    "ownership and milestones"
+  ],
+  "revision": {
+    "editorial_change": "allowed with recorded patch version",
+    "semantic_change": "requires superseding ADR",
+    "reopen_triggers": [
+      "pinned Lean compilation shows composition closure needs a materially stronger law field",
+      "chosen iterator carrier cannot express compatible continuation congruence or bisimulation",
+      "mechanized countermodel falsifies the stated weak L35 universal property",
+      "state architecture requires an unfactorable directed simulation in place of the selected equivalence",
+      "implementation produces unavoidable duplicated equality and observational proof families",
+      "runtime refinement establishes disposer identity as an intended observable"
+    ],
+    "workflow_rule": "derive effective readiness from immutable baseline dispositions plus accepted and superseding ADRs and newly recorded blockers"
+  },
+  "integrity": {
+    "markdown_artifact": "DeepSeek-Harness-05-ADR-01-Equivalence-Architecture.md",
+    "markdown_sha256": "c541fb2ffe7a60c83e5856132cd3b30b54073f3dd1271f65aa180977d4ffde7c",
+    "lean_spike_sha256": "c289058c734a404e2556a5859e5c0762c02815704816cb26e5719b591b87d7a9",
+    "json_validated": true,
+    "affected_node_set_matches_baseline": true
+  }
+}
