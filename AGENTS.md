@@ -1,72 +1,108 @@
 # CordisLean Repository Instructions
 
-These instructions govern every file below this project root. `PLAN.md` and
-`DESIGN_NOTES.md`, when present, are the authority for Cordis-specific semantic
-decisions. Development tools may improve the workflow but may not change those
-decisions.
+These instructions govern the repository after the 2026-08-26 transition to the paper-first formalization.
+
+## Authority order
+
+For new work, authority is:
+
+```text
+paper baseline / frozen dependency graph
+→ Formalization Disposition Specification
+→ accepted ADRs and closure packets
+→ production Lean modules
+```
+
+`Cordis-new/` currently contains the formal-reference, blueprint and architecture-decision artifacts. Until production modules are extracted from the spikes, accepted ADR documents are semantic authority for the new formalization.
+
+The old `Core → Effects → Integrated → Extended → Examples` model is legacy. Its files remain buildable reference material, but `PLAN.md`, `PAPER_MAP.md`, `LAYERS.md`, `ASSUMPTIONS.md`, `DESIGN_NOTES.md` and `CONFLUENCE_STATUS.md` describe that legacy model unless and until rewritten. They must not override the new paper-first architecture.
+
+See `ARCHIVE.md` for the migration boundary.
 
 ## Mathematical integrity
 
-- Do not weaken a theorem statement merely to close its proof.
-- Do not silently strengthen `WellFormed`. If a theorem genuinely lacks a
-  hypothesis, first give or explain a counterexample, record it in
-  `DESIGN_NOTES.md`, add only the weakest reasonable hypothesis, and explain the
-  difference from the Cordis source model.
-- A committed provider need only be `installed`; it must not be strengthened to
-  `active`.
-- A target provider must be `active`.
-- An unloading provider may remain in an installed consumer's committed view.
-- `registered` and `spec` remain fixed during Core lifecycle normalization.
-- Acyclicity is an explicit theorem hypothesis; never hide it in `WellFormed`.
-- Never present a Core result as a result about full Cordis.
+- Never weaken a theorem merely to close a proof.
+- Never silently repair a paper definition or theorem. Record the literal paper item and the repaired target separately.
+- If a paper claim appears false, vacuous, ill-typed, non-computable or under-specified, mechanize the defect or counterexample where practical before replacing the claim.
+- Do not hide missing hypotheses inside an oversized `WellFormed` predicate.
+- Distinguish semantic propositions from executable data and algorithms.
+- Distinguish paper assumptions from properties enforced by the Cordis TypeScript runtime.
+- Do not claim that Section 4 metatheory covers arbitrary realms/interception or verifies the production runtime unless a separate refinement theorem establishes that fact.
 
 ## Proof integrity
 
-Lean source must not contain `sorry`, `admit`, or project-defined `axiom`
-declarations. Do not manufacture theorems with vacuous hypotheses, an
-impossible `WellFormed`, a degenerate `Step`, a trivialized `quiet` predicate,
-or empty-relation tricks. If a desired theorem is false, keep the mechanically
-checked counterexample and document the failure.
+Lean source delivered as production formalization must not contain `sorry`, `admit`, or project-defined unchecked `axiom` declarations.
 
-## Layer discipline
+Do not manufacture proofs using:
 
-Maintain this dependency direction:
+- impossible well-formedness assumptions;
+- empty/degenerate transition relations;
+- vacuous implications introduced only to avoid the actual theorem;
+- quotienting or observational relations that erase exactly the behavior under audit;
+- hidden classical choices where an executable claim is being asserted.
+
+If a statement is not currently provable, preserve a precise blocked theorem statement, counterexample, or named proof obligation instead.
+
+## New architecture discipline
+
+The target production structure is conceptually:
 
 ```text
-Core
-  Effects
-    Integrated
-      Extended
-        Examples
+Cordis/Paper
+Cordis/Audit
+Cordis/Runtime
+Cordis/Refinement
 ```
 
-- Core does not import Effects, Integrated, or Extended.
-- Effects is independent of lifecycle semantics.
-- Integrated may import Core and Effects.
-- Extended may import preceding layers.
-- Examples may import every layer.
-- Do not alter a frozen, passing lower-layer semantics merely to prove an
-  upper-layer theorem.
+- `Paper` owns faithful or explicitly repaired formalizations of paper mathematics.
+- `Audit` owns no-go results, counterexamples, computability/scope/type audits and correspondence records.
+- `Runtime` owns an abstract operational model of official Cordis engineering; it must not be confused with the paper calculus.
+- `Refinement` owns simulation/refinement theorems relating runtime behavior to paper-facing semantics.
+
+Architecture spikes under `Cordis-new/blueprint/architecture-decision/` are prototypes, not final public APIs. Production modules should extract only accepted interfaces and laws.
+
+## Accepted architectural commitments
+
+Current accepted decisions include:
+
+- ADR-01: raw exact algebra with explicit relation-parametric semantic law layers; no unique global `[Setoid Γ]` and no quotient-first execution model.
+- ADR-02: `Finmap` dependent coeffect store, semantic `Set K` versus executable `Finset K`, explicit partial semantics and checked executable views.
+- ADR-03: positive finite registry/state shell; no literal `μΓ. Γ × (Γ → Γ) × Σ` state datatype and no stored unrestricted `State → State` closures inside recursive state.
+- ADR-04: theorem-level `IncarnationId` denotes one allocation lifetime; runtime atoms/entry IDs are separate and alpha-renaming is explicit.
+
+Do not reopen these decisions implicitly in downstream code. A change that contradicts an accepted ADR requires a superseding ADR or explicit review.
+
+## Legacy discipline
+
+The existing modules
+
+```text
+Cordis.Core
+Cordis.Effects
+Cordis.Integrated
+Cordis.Extended
+Cordis.Examples
+```
+
+are a frozen simplified model. Preserve their proved semantics and buildability unless doing an explicit archive-maintenance change. Do not extend them as if they were the new paper formalization.
+
+The immutable historical snapshot is available on branch `archive/legacy-formalization-2026-08-24` at commit `afa8a0e29513c8be34878e054fa18f36def5fa6f`.
 
 ## API-first proof engineering
 
-Do not guess declaration names. Search in this order: project declarations,
-`#check`, `#find`, `exact?`, `apply?`, `simp?`, Lean MCP local search, local
-mathlib sources, LeanSearch/Loogle, then (only if needed) prove a reusable
-generic lemma.
+Before implementing generic machinery, search project declarations and mathlib. Prefer existing APIs for finite dependent maps, finite sets, relation closures, well-founded recursion, permutations/equivalences, cardinal arguments and decidability.
 
-Prefer mathlib's existing relation closures, accessibility/well-foundedness,
-finite collections, lexicographic orders, finite sums, and decidability APIs.
-Do not reimplement generic graph or finite-set infrastructure without a
-documented API gap.
+For nontrivial proofs:
 
-For nontrivial proofs, inspect the exact goal and local context, test the
-smallest candidate proof, check diagnostics immediately, split meaningful
-lemmas when needed, build the current module, and run `lake build` at each
-milestone. Termination, preservation, progress, confluence, and rollback
-proofs should be decomposed into named mathematical lemmas rather than hidden
-inside one large automation call.
+1. inspect the exact goal and hypotheses;
+2. isolate the mathematical lemma from architecture plumbing;
+3. test the smallest candidate proof;
+4. build the current module immediately;
+5. promote reusable facts into named lemmas;
+6. run axiom and placeholder audits at milestones.
 
-Core is the permanent regression gate. Run an axiom audit for each layer's
-strongest theorems and scan Lean sources for forbidden placeholders before
-delivery.
+Do not guess theorem names or duplicate generic mathlib infrastructure without documenting an actual API gap.
+
+## Build policy
+
+The current Lake default target still builds the legacy `Cordis` library as a regression/reference corpus. New production modules must be added to explicit build/import targets as they are created. Do not remove the old build target merely to make the repository look cleaner before the new production tree exists.
