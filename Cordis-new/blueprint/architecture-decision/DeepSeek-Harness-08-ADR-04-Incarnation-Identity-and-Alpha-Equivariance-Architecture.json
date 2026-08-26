@@ -1,0 +1,282 @@
+{
+  "metadata": {
+    "artifact_title": "DeepSeek Harness ADR-04: Incarnation Identity, Freshness, and Alpha-Equivariance Architecture",
+    "decision_id": "ADR-04",
+    "status": "architecture-accepted-spike-compiled",
+    "artifact_version": "1.1.1-accepted-compiler-validated",
+    "created_on": "2026-08-26",
+    "validation_updated_on": "2026-08-26",
+    "semantic_closure_status": "architecture-resolved; downstream equivariance and control proofs pending",
+    "source_title": "A Programming Paradigm for Spatiotemporal Composability",
+    "source_sha256": "4d48478dc0b6222d9f74d7db10ee776449b1209eb112632336544d32a49db97f"
+  },
+  "baselines": {
+    "dependency_graph": {
+      "artifact": "DeepSeek-Harness-03-Definition-Theorem-Dependency-Graph.json",
+      "version": "1.0-frozen",
+      "sha256": "8f99db87d7aa4d856657abdaf469d9941d3af7fea88ababd2e58cba49041ded8",
+      "mutated_by_this_decision": false
+    },
+    "disposition": {
+      "artifact": "DeepSeek-Harness-04-Formalization-Disposition-Specification.json",
+      "version": "1.0-baseline",
+      "sha256": "63d1fb68bcebb63e5282c7314d03038a93db0a836a6c8b1a08a41c2cd70a43db",
+      "mutated_by_this_decision": false
+    }
+  },
+  "dependencies": {
+    "ADR-01": {
+      "artifact": "DeepSeek-Harness-05-ADR-01-Equivalence-Architecture",
+      "status": "accepted",
+      "json_sha256": "1963c468ebaca2cd86635e88881ecda373b8278d0895c3805c52717e0a056dd5"
+    },
+    "ADR-02": {
+      "artifact": "DeepSeek-Harness-06-ADR-02-Coeffect-Store-and-Partiality-Architecture",
+      "status": "accepted-local-canonical",
+      "json_sha256": "f1b8e298edb7405a4a67fa10869d621a2bfeab80d5e5cf6a86feb752878699e5",
+      "provenance_note": "The local accepted revision is authoritative for this chain; a previously created Library canonical item may still need a versioned replacement. This ADR does not mutate it."
+    },
+    "ADR-03": {
+      "artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture",
+      "status": "accepted-compiler-validated-user-reported",
+      "json_sha256": "0c6861367cf3061358366e90b2e2848649d96f5ad792185ed5f2e186d0520d48"
+    },
+    "ADR-03-CLOSURE": {
+      "artifact": "DeepSeek-Harness-07-ADR-03-BD-STATE-Closure-Packet",
+      "status": "accepted-compiler-validated",
+      "json_sha256": "2ef858c0a4d99bdf792e98e779d4c452884690f1a3d68addcefec6d827469a35",
+      "status_note": "Parent closure packet is accepted; this ADR does not alter it."
+    }
+  },
+  "decision": {
+    "resolves": ["BD-NAMES"],
+    "statement": "Use an opaque theorem-level IncarnationId for one allocation lifetime, enforce trace/run-local no-reuse through an explicit ever-issued ledger and witnessed allocation boundary, retain current-registry freshness as the paper-compatible local premise, and define alpha-renaming as an explicit permutation action over every name-bearing field. Runtime atom reuse is admitted only through an explicit generation/allocation-event refinement.",
+    "primary_pattern": "lifetime-identity-plus-ghost-allocation-ledger-and-alpha-action",
+    "paper_fidelity_status": "logical-repair/refinement-profile; literal O-Remove-to-O-Insert atom reissue remains a lower-level profile",
+    "raw_state_change": false,
+    "semantic_observation_change": false,
+    "global_fintype_assumption": false,
+    "root_representation": "ParentRef = Option IncarnationId; none is a synthetic root fixed by alpha",
+    "ledger_boundary": "orchestration/trace metadata paired with RawState when allocation semantics is evaluated; excluded from default ADR-03 coeffect observation unless an explicit name-aware observation is selected",
+    "freshness_observation_rule": "freshness-sensitive allocation applicability and same-rule preservation use the (RawState, ledger/TraceMeta) product or an externally labelled orchestration relation; default CoreStateObs must not erase the ledger for those claims",
+    "relation_split": "lifecycle relation on RawState excludes freshness-sensitive allocation steps; orchestration relation on (RawState, TraceMeta) carries allocation/retirement labels, and any unified Step must include the ledger in its state/observation"
+  },
+  "identity_layers": [
+    {
+      "name": "ComponentId",
+      "role": "catalog/code identity; multiple incarnations may share it",
+      "theorem_registry_key": false
+    },
+    {
+      "name": "EntryId",
+      "role": "loader/configuration reconciliation key",
+      "theorem_registry_key": false
+    },
+    {
+      "name": "RuntimeAtom",
+      "role": "host object/UID handle; may be recycled",
+      "theorem_registry_key": false
+    },
+    {
+      "name": "IncarnationId",
+      "role": "one allocation lifetime; registry/parent/view/trace identity",
+      "theorem_registry_key": true,
+      "requirements": ["abstract theorem-level parameter", "DecidableEq for finite operations", "no global Fintype in generic core"]
+    },
+    {
+      "name": "RealmId",
+      "role": "scoped-coeffect namespace, distinct from fiber names and keys",
+      "theorem_registry_key": false
+    }
+  ],
+  "freshness_and_allocation": {
+    "current_fresh": "n ∉ registry.keys",
+    "ever_fresh": "n ∉ ledger.everIssued",
+    "ledger_sound": "registry.keys ⊆ ledger.everIssued",
+    "allocation_allowed": "CurrentFresh registry n ∧ EverFresh ledger n ∧ ParentAllowed registry parent",
+    "successful_update": "registry' = insert n registry and everIssued' = insert n everIssued",
+    "retirement_update": "remove/retire changes current registry only; everIssued is monotone",
+    "scope": "no-reuse is enforced within one modeled run/trace identity domain; an epoch reset requires a fresh namespace and no cross-boundary references",
+    "allocation_representation": "relational or proof-witnessed; no deterministic min/max allocator in the theorem core",
+    "supply": "optional FreshSupply chooses Option N and reports exhaustion; total-allocation theorems require an explicit availability premise",
+    "supply_equivariance": "an executable supply is outside the alpha theorem core unless it carries a permutation action and equivariance law",
+    "nested_registration": "allocation labels/history must expose every D47/iterator-created child and its parent/owner",
+    "stale_handle_policy": "a retirement/inverse handle captures the IncarnationId allocation, never a later reissued atom",
+    "transition_carrier": "allocation-aware semantics use (RawState, NameLedger/TraceMeta) or an equivalent orchestration product; RawState alone is not Markov for lifetime freshness"
+  },
+  "parent_boundary": {
+    "parent_ref": "Option IncarnationId",
+    "none_meaning": "synthetic root marker, not a registry/provider entry",
+    "top_level_fibers": "multiple none-parent children allowed",
+    "predicates": ["ParentAllowed", "ParentClosed", "ParentAcyclic", "ParentForest/ParentRooted when selected"],
+    "active_parent_required": false,
+    "registration_order": "separate birth/allocation-event index; never order by the representation of an opaque ID",
+    "support_cycle_status": "not solved here; late-registration/support cycles remain BD-SUPPORT/BD-CONTROL"
+  },
+  "alpha_action": {
+    "carrier": "Equiv.Perm IncarnationId",
+    "root_action": "none is fixed",
+    "renamed_fields": [
+      "registry domain keys",
+      "parent references",
+      "provider IDs in committed/target views",
+      "ever-issued ledger",
+      "allocation and actor labels",
+      "trace names, episode keys, precedence/support indices"
+    ],
+    "unchanged_fields": ["dependency keys", "payload/code values only under identity-opacity assumption"],
+    "payload_policy": "name-neutral payloads are the spike specialization; ID-bearing behavior, accumulators, ambient values, handles, or hashes require Rename* actions and interpreter equivariance",
+    "observation_relation": "separate from ADR-01 CoreStateObs, LifecycleObs, and EraseControl",
+    "global_vs_local": "global permutation is the L56 form; T73 may first use a finite support bijection and must provide an extension/finite-action lemma when a global permutation is required",
+    "required_laws": ["identity", "composition", "inverse/cancellation", "lookup/domain transport", "freshness/ledger transport", "WF/parent/provider/target transport", "labelled-step and trace equivariance"]
+  },
+  "runtime_refinement": {
+    "abstract_runtime_identity": "RuntimeAtom × Generation",
+    "map": "the spike uses globally injective encode : RuntimeIdentity Atom Generation → IncarnationId; an integration may restrict this to an explicitly admissible allocation domain",
+    "reuse": "same atom with a new generation must map to a distinct incarnation",
+    "entry_id": "separate loader/configuration identity; replacing one entry allocates a new incarnation",
+    "status": "interface/smoke theorem compiled; concrete runtime correspondence and target-hash opacity deferred to implementation refinement"
+  },
+  "trace_and_episode": {
+    "finite_support": "TraceHasFiniteNames is an explicit finite Finset support witness for a declared trace-name support envelope",
+    "field_coverage": "NameTrace requires the initial issued set, listed allocations, actor/parent/reference labels, boundary snapshots, and support linkage to lie in the envelope",
+    "exact_occurrence_set": "the control/trace layer must define the exact union of names occurring in all snapshots/events and either prove equality with the envelope or state the envelope explicitly",
+    "label_scope": "the spike StepLabel is a name-footprint shell; authoritative rule tags and per-allocation owner/parent events are BD-CONTROL obligations",
+    "no_reuse": "allocation list is Pairwise distinct and fresh relative to the initial issued ledger; operational ledger evolution and event coverage are control-layer obligations",
+    "allocation_completeness": "trace allocation list is required to equal the concatenation of label allocation events",
+    "episode_key": "IncarnationId under no-reuse; allocation-event/generation ID otherwise",
+    "T66": "finite trace support and per-ID work/iterator bounds remain explicit theorem hypotheses",
+    "T73": "same ordered orchestration inputs plus a trace/tree alpha witness; not merely equal final configurations",
+    "name_wf_scope": "NameWF in the spike is only the name-boundary fragment (LedgerSound and ParentForest), not full D58 CoreWellFormed",
+    "rootedness": "a parent-rooted/tree theorem requires the selected finite closed-forest/root witness at integration",
+    "reuse_refinement": "reusable runtime atoms still require a separate trace-lifting/refinement theorem before literal-paper reissue semantics is covered"
+  },
+  "lean_spike": {
+    "artifact": "DeepSeek-Harness-08-ADR-04-Incarnation-Identity-and-Alpha-Equivariance-Architecture-Spike.lean",
+    "namespace": "CordisADR04",
+    "mode": "standalone mirror; do not import beside production modules with duplicate declarations",
+    "compiled": true,
+    "validation_basis": "owner-run local compiler check; raw compiler log is not retained as an artifact",
+    "compiler": "Lean 4.33.0 / Lake 5.0.0-src+d8b1897",
+    "mathlib_commit": "db584cd6d46c92f209a44c0f1c829460d327499d",
+    "lean_commit": "d8b18978322de05a8f3dba51ef03cf5461676c17",
+    "command": "lake env lean artifacts/DeepSeek-Harness-08-ADR-04-Incarnation-Identity-and-Alpha-Equivariance-Architecture-Spike.lean",
+    "exit_code": 0,
+    "output_policy": "warnings only; no sorry/admit/custom axiom declarations",
+    "evidence": [
+      "allocate/check/register freshness equations",
+      "ledger soundness and current/ever freshness bridge",
+      "Finmap registry/view lookup and domain transport under permutation",
+      "root/freshness/ledger preservation and registry identity law",
+      "labelled source-to-target StepEquivariant contract",
+      "declared trace-support linkage and no-reuse transport",
+      "RuntimeIdentity separation theorem"
+    ]
+  },
+  "acceptance_checks": [
+    {
+      "id": "NAMES-01",
+      "check": "Identity layers are distinct; IncarnationId is an abstract opaque parameter and not globally finite",
+      "status": "represented and compiled"
+    },
+    {
+      "id": "NAMES-02",
+      "check": "Current versus ever-issued freshness, monotone ledger, and witnessed allocation",
+      "status": "represented; basic bridge/equations compiled"
+    },
+    {
+      "id": "NAMES-03",
+      "check": "Option parent/root with explicit closure, acyclicity, and forest boundary",
+      "status": "represented; full preservation/rootedness proof deferred"
+    },
+    {
+      "id": "NAMES-04",
+      "check": "Alpha action covers registry, views, parents, ledger, and labels",
+      "status": "lookup/domain/action identity compiled; composition/inverse and full WF proof deferred"
+    },
+    {
+      "id": "NAMES-05",
+      "check": "Nested allocation events and parent/owner references are explicit",
+      "status": "boundary labels and completeness contract represented; concrete control constructors deferred"
+    },
+    {
+      "id": "NAMES-06",
+      "check": "Episode/index semantics are lifetime-safe and stale handles cannot be silently rebound",
+      "status": "architecture fixed; lifecycle theorem deferred"
+    },
+    {
+      "id": "NAMES-07",
+      "check": "Finite support is a hypothesis on actual traces, not global Fintype",
+      "status": "support-envelope interface represented and compiled; exact occurrence-set equality deferred"
+    },
+    {
+      "id": "NAMES-08",
+      "check": "Runtime atom reuse has an explicit generation/refinement boundary",
+      "status": "interface and separation lemma compiled; implementation relation pending"
+    },
+    {
+      "id": "NAMES-09",
+      "check": "Payload/ambient/value ID capture is prohibited or equipped with Rename actions",
+      "status": "explicit contract; neutral-payload specialization in spike"
+    },
+    {
+      "id": "NAMES-10",
+      "check": "ADR-03 RawState and ADR-01/02 observation/carrier boundaries remain unchanged, with an explicit name-aware boundary for allocation rules",
+      "status": "passed by architecture audit"
+    },
+    {
+      "id": "NAMES-11",
+      "check": "Pinned Lean compile and no placeholders",
+      "status": "passed locally; exit code 0, warnings only"
+    },
+    {
+      "id": "NAMES-12",
+      "check": "Full alpha/rule/trace/episode/provider/target equivariance theorems",
+      "status": "deferred to BD-CONTROL, BD-ITER, BD-SUPPORT, and implementation refinement"
+    }
+  ],
+  "readiness_effect": {
+    "blocker_subtraction": "remove only BD-NAMES; do not mutate Harness-03/04",
+    "newly_blocker_free_after_ADR01_02_03": ["D45", "D58", "D65"],
+    "affected_nodes": ["D44", "D45", "D47", "D53", "L56", "T59", "D60", "D58", "D65", "T66", "D67", "L68", "L71", "L72", "T73", "D74", "R.full"],
+    "remaining_independent_blockers": {
+      "D44": ["BD-ITER", "BD-STAGING"],
+      "D47": ["BD-CONTROL"],
+      "D53": ["BD-EQUIV", "BD-CONTROL"],
+      "L56": ["BD-CONTROL"],
+      "T59": ["BD-CONTROL"],
+      "D60": ["BD-ITER", "BD-EQUIV", "BD-CONTROL"],
+      "T66": ["BD-ITER", "BD-CONTROL"],
+      "D67": ["BD-SUPPORT"],
+      "L68": ["BD-SUPPORT", "BD-CONTROL"],
+      "L71": ["BD-EQUIV", "BD-CONTROL"],
+      "L72": ["BD-SUPPORT", "BD-EQUIV", "BD-CONTROL"],
+      "T73": ["BD-SUPPORT", "BD-EQUIV", "BD-ITER", "BD-CONTROL"],
+      "D74": ["BD-SCOPED"],
+      "R.full": ["BD-ITER", "BD-STAGING", "BD-CONTROL"]
+    }
+  },
+  "non_scope": [
+    "BD-CONTROL action constructors and operational lifecycle semantics",
+    "BD-ITER iterator/failure carrier and termination proof",
+    "BD-SUPPORT late-registration/support-cycle repair",
+    "BD-SCOPED realms/interception",
+    "runtime UID allocator/source audit",
+    "full L56/T73 proof instantiation",
+    "mutation of frozen graph or disposition baseline"
+  ],
+  "revision_policy": {
+    "editorial_change": "patch version",
+    "spike_or_proof_repair_without_decision_change": "revised ADR-04 companion",
+    "identity_or_no_reuse_policy_change": "superseding ADR required",
+    "observation_or_ledger_boundary_change": "superseding ADR required",
+    "frozen_baselines_unchanged": true
+  },
+  "integrity": {
+    "markdown_artifact": "DeepSeek-Harness-08-ADR-04-Incarnation-Identity-and-Alpha-Equivariance-Architecture.md",
+    "markdown_sha256": "f653ea4c86532dee3912a8926d3e984dfb2d54417e405798b47bec4e5f25089a",
+    "lean_spike_artifact": "DeepSeek-Harness-08-ADR-04-Incarnation-Identity-and-Alpha-Equivariance-Architecture-Spike.lean",
+    "lean_spike_sha256": "992c22c69cf3b65b2015a3abf7befc9b8f5bc0a935d5eadff67692fcdeb56ee9",
+    "json_validated": true
+  }
+}
