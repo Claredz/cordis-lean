@@ -1,113 +1,114 @@
-# Cordis Lean 机制化项目
+# Cordis Lean — Paper Formalization and Audit
 
-本项目形式化了 **Cordis** 的部分核心思想。Cordis 源于 **DeepSeek
-Harness** 的运行时架构研究，用于在显式依赖和生命周期规则下组合、管理和
-替换运行时组件。设计背景见随附的
-[Cordis 论文](https://github.com/cordiverse/paper/blob/main/paper.pdf)。
+本仓库使用 Lean 4 对 Cordis 论文 *A Programming Paradigm for Spatiotemporal Composability* 进行形式化重建、数学审计，并为后续的论文模型 ↔ Cordis runtime refinement 建立基础。
 
-Cordis 的基本思路是把应用表示成一组具有独立身份的 *fiber*。一个 fiber
-可以向其他 fiber 提供能力，也可以通过依赖 key 消费能力，并按照受控的
-生命周期推进。Cordis 将稳定配置中的依赖观察与进行中的生命周期转换区分
-开来，使 provider 可以被安装、激活、转移、卸载或替换，而不要求每个
-consumer 直接处理整个运行时的状态。
+> 当前主线不是对旧简化生命周期模型继续扩展，也不是把论文公式逐字翻译成 Lean。目标是区分并连接：**论文原始陈述、必要的数学修复、Lean 中可验证的语义模型，以及真实 Cordis 工程实现**。
 
-本 Lean 项目研究的是这一思想的数学核心。它是一个**简化的机制化模型**，
-不是对完整 Cordis 论文、DeepSeek Harness 或生产实现的验证。
+## 当前状态
 
-## Cordis 架构概览
+仓库正在从早期的简化 Cordis 机制化模型迁移到新的 paper-first formalization。
 
-在模型中，catalog 描述 fiber、provider 能提供的能力 key 以及 consumer
-依赖的 key。Provider resolution 为每个依赖 key 选择唯一的 active provider。
-Consumer 保留当前稳定配置中的 committed view；生命周期转换则准备下一个
-稳定配置的 target view。
+当前新的权威材料位于 `Cordis-new/`：
 
-```text
-declared catalog and dependencies
-              │
-              ▼
-    provider resolution ─────► target dependency view
-              │                         │
-              ▼                         ▼
-      lifecycle normalization ─► committed dependency view
-              │
-              ├──── reversible effects and rollback
-              │
-              └──── quiet state ─► retire / remove / insert / normalize
-```
+- `DeepSeek-Harness-01-Formal-Reference.md` — 论文形式化参考与符号解释。
+- `blueprint/DeepSeek-Harness-03-Definition-Theorem-Dependency-Graph.md` — 74 个编号 formal items 与 8 个辅助 formal blocks 的冻结依赖基线。
+- `blueprint/DeepSeek-Harness-04-Formalization-Disposition-Specification.md` — 对每个 formal item 的 DIRECT / REPAIR / SUBSUMED / EXPOSITORY / DEFER 分类与审计结论。
+- `blueprint/architecture-decision/` — 已接受或正在收敛的架构决策与 Lean spikes。
 
-Committed view 与 target view 的区分非常重要：正在 unloading 的 provider 仍然
-可能处于 installed 状态，因此可以继续出现在 consumer 的 committed view 中；
-而新选中的 target provider 必须已经 active。当不再有生命周期工作时，状态
-被称为 *quiet*。Registry mutation 和 provider replacement 被建模为显式的
-有限 epoch，并且结构性操作只能发生在 quiet 边界。
+截至 2026-08-26，已形成以下主要 ADR：
 
-论文中的运行时架构更丰富，还涉及 iterator 驱动的 effects、异步工作、失败
-处理、realms、动态 child registration 以及实现层行为。这些内容没有被
-悄悄扩展进下面的 Lean 模型。
+1. **ADR-01 — Equivalence Architecture**：raw exact algebra + 显式 relation-parametric law layer。
+2. **ADR-02 — Coeffect Store / Specification / Partiality**：`Finmap` dependent store，`Set`/`Finset` 双层 specification，显式 partial semantics。
+3. **ADR-03 — Unified State / Registry**：以正递归的有限 registry shell 替代论文 D32 的字面递归 fixed-point 方程。
+4. **ADR-04 — Incarnation Identity / Alpha-Equivariance**：区分 runtime atom 与一次 allocation lifetime 的 `IncarnationId`，为 trace、freshness 与 alpha-renaming 建立接口。
 
-## 本项目的机制化内容
+论文审计已经记录多项高影响问题，包括 D8 witness packaging、D25/D26 computability、L35 returned-inverse coherence、D32 negative recursion、fiber-name reuse、L68 support-cycle outline、T66 trace scope 等。它们应被机械化验证或修复，而不是在 Lean 中静默绕过。
 
-形式化代码遵循严格的分层依赖关系：
+## 研究结构
+
+项目采用下面的概念分层：
 
 ```text
-Core → Effects → Integrated → Extended → Examples
+historical Cordis engineering
+          ↓ abstraction
+paper semantics
+          ↓ audit / repair
+Lean formal model
+          ↓ refinement / simulation
+Cordis runtime
 ```
 
-1. `Cordis.Core` — 有限生命周期与依赖演算、provider resolution、安全性、
-   progress、反向优先级终止度量、quiet 状态可达性，以及经过检查的反例。
-2. `Cordis.Effects` — 带 witness 的独立可逆 effects、LIFO 逆操作累积、有限
-   program、前缀 rollback 和 independence predicates。
-3. `Cordis.Integrated` — 携带有限 effect program 的生命周期阶段、到 Core 的
-   erasure、精确 rollback、交错的选择性 erasure，以及结合 Core 度量与剩余
-   program 长度的字典序终止证明和 integrated quiet-state reachability。
-4. `Cordis.Extended` — 机械构造的独立 residual steps、对 Priority 相关 peak
-   的穷尽 join、有效状态上的完整 Core confluence、唯一 quiet normal form、
-   项目内的 Newman 引理，以及显式的 quiet-only 有限 provider replacement
-   epochs。
-5. `Cordis.Examples` — 具体的 chain/diamond schedules、quiet-state 证明、可执行
-   effect 测试、经过检查的五阶段 replacement derivation，以及具体的
-   `Agent → Model → APIProvider` 替换。
-
-目前已检查的较强结果包括：WellFormed preservation、在显式
-priority-acyclicity 假设下的无死锁性、生命周期终止、quiet 状态可达性、有效
-根状态上的 Core 完全合流，以及可达 quiet normal form 的唯一性。Examples
-还具体构造了旧 API provider 到新 provider ID 的替换，并证明 model consumer
-的 committed binding 随之发生变化。
-
-Integrated confluence 仍然没有被声称：不同 actor 的 Core 生命周期步骤可能
-通过共享 effect world 发生交互，需要额外的 effect commutation 假设才能继续
-证明。
-
-## WSL 开发环境
-
-本项目以 WSL 为主要开发环境，当前固定使用 Lean/mathlib `v4.33.0`。具体
-版本、Lake 配置和工具链说明见 `TOOLING.md`。
-
-## 构建与审计
+计划中的正式代码层次是：
 
 ```text
-lake build Cordis.Core
-lake build Cordis.Effects
-lake build Cordis.Integrated
-lake build Cordis.Extended
-lake build Cordis.Examples
-lake build
+Cordis/Paper/        -- 论文定义、定理及明确标注的 repaired statements
+Cordis/Runtime/      -- 对官方 Cordis runtime 的抽象 operational model
+Cordis/Refinement/   -- Paper ↔ Runtime 的 simulation / refinement results
+Cordis/Audit/        -- counterexamples、no-go results、scope/computability audits
 ```
 
-`Cordis/Audit.lean` 对各层具有代表性的强定理运行 `#print axioms`。项目策略
-禁止 Lean 源码出现 `sorry`、`admit` 或自定义 `axiom` 声明。
+这些 production modules 尚在从 architecture spikes 迁移中。当前不要把 `Cordis-new/.../*Spike.lean` 当成最终 API。
 
-## 核心建模选择
+## 旧形式化模型
 
-Committed provider 与 target provider 的有效性条件不同。正在 unloading 的
-provider 仍然 installed，因此可以保留在 committed view 中；新选中的 target
-provider 则必须 active。只有存在唯一 active candidate 时，provider resolution
-才返回结果。Single-source 只约束当前 `registered` 集合，因此后续
-orchestration epoch 可以用新的 ID 替换 provider。
+根目录现有的：
 
-## 范围与解读
+```text
+Cordis/Core
+Cordis/Effects
+Cordis/Integrated
+Cordis/Extended
+Cordis/Examples
+```
 
-在把任何定理解读为 Cordis 论文或实际实现的结论前，请先阅读
-`LAYERS.md`、`ASSUMPTIONS.md` 和 `PAPER_MAP.md`。Core 合流定理、对抗性审计
-和剩余边界记录在 `CONFLUENCE_STATUS.md`；当前实现状态见 `PLAN.md`，语义
-决策见 `DESIGN_NOTES.md`。
+以及 `PLAN.md`、`PAPER_MAP.md`、`LAYERS.md`、`ASSUMPTIONS.md`、`CONFLUENCE_STATUS.md` 等相关文档，属于 **legacy simplified model**。
+
+该模型已经包含 preservation、withdrawal safety、termination、quiet reachability、Core confluence、provider replacement 等有价值的机械化结果，但它明确不是对当前论文的逐项形式化，也不是 Cordis TypeScript runtime verification。它现在只作为历史成果、反例来源和设计参考保留，不再作为新主线的语义权威。
+
+冻结快照见：
+
+- branch `archive/legacy-formalization-2026-08-24`
+- commit `afa8a0e29513c8be34878e054fa18f36def5fa6f`
+
+详细迁移说明见 [`ARCHIVE.md`](./ARCHIVE.md)。
+
+## 分支策略
+
+- **`main`** — 当前正式主线；应始终代表最新被接受的 paper-formalization 架构与 production work。
+- **`new-paper-formalization`** — 迁移期间的 staging branch；本轮整理后不应再与 `main` 独立演化，待协作者全部切换后可删除。
+- **`archive/legacy-formalization-2026-08-24`** — 旧简化模型的冻结归档，不再开发。
+- **`codex/initial-upload`** — 历史分支，目前与旧归档快照指向同一提交，视为 deprecated。
+
+新功能原则上从 `main` 开独立 topic branch，再通过 PR 合回 `main`。
+
+## 形式化原则
+
+1. **Paper statement 与 repaired statement 必须区分。** 不能为了让 Lean 接受而静默改变论文命题。
+2. **假命题优先机械化反例。** 不通过强化 `WellFormed`、加入不可能假设或退化 relation 来“证明”。
+3. **runtime guarantee 与 paper hypothesis 必须区分。** 例如 effect commutation、inverse correctness、total provision 等不能假装是 TypeScript runtime 自动检查的性质。
+4. **优先复用 mathlib。** 有限 dependent map、relation closure、well-foundedness、cardinal、permutation/equivariance 等应先审计现有 API。
+5. Lean source 不允许 `sorry`、`admit` 或项目自定义不受控 `axiom` 作为交付结果。
+
+仓库级开发规范见 [`AGENTS.md`](./AGENTS.md)。
+
+## 工具链
+
+项目当前固定使用 Lean/mathlib `v4.33.0`：
+
+```toml
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.0"
+```
+
+旧 `Cordis` library 目前仍保留为 regression/reference build target。新的 production modules 建立后，会再单独调整 Lake default target；本轮仓库整理不通过删除旧 target 来制造一个无法构建的“干净目录”。
+
+## 下一阶段
+
+近期工作优先级：
+
+1. 将 ADR-01/02 已稳定的 Effects 与 flat Coeffects 从 spike 迁移为 production Lean modules，并纳入 `lake build`。
+2. 机械化高价值 audit targets，例如 D8、D25/D26、D32 与 L68。
+3. 继续解决 iterator、staging、control 与 support 的架构 blocker，再进入 Section 4 metatheory 的完整重建。
+4. 在 paper model 稳定后建立官方 Cordis runtime abstraction 与 refinement layer。
