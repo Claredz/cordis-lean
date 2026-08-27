@@ -1,0 +1,3844 @@
+{
+  "metadata": {
+    "title": "DeepSeek Harness: Definition and Result Dependency Graph",
+    "graph_version": "1.0-frozen",
+    "frozen_on": "2026-08-25",
+    "source_title": "A Programming Paradigm for Spatiotemporal Composability",
+    "source_sha256": "4d48478dc0b6222d9f74d7db10ee776449b1209eb112632336544d32a49db97f",
+    "edge_direction": "prerequisite -> dependent",
+    "direct_edges_only": true,
+    "numbered_items": 74,
+    "auxiliary_items": 8,
+    "direct_edges": 540,
+    "kind_counts": {
+      "Definition": 43,
+      "Theorem": 18,
+      "Lemma": 11,
+      "Corollary": 2
+    },
+    "known_forward_reference_cycles": [
+      [
+        "D49",
+        "R.iter",
+        "R.fail"
+      ],
+      [
+        "D67",
+        "L68"
+      ]
+    ]
+  },
+  "dependency_policy": {
+    "statement": "Needed to form, type, or state the numbered item as presented.",
+    "proof_or_justification": "Directly cited or substantively used in the printed proof or immediate justification.",
+    "scope": "Imported by an explicit section-wide claim; used only for Lemma 38's Section 3.1 transport schema.",
+    "evidence_explicit": "The paper cites the item by number or names the formal block directly.",
+    "evidence_implicit": "The construction or argument substantively uses the item without a numbered citation.",
+    "evidence_forward": "The paper explicitly relies on a later-numbered item to complete or justify the present construction.",
+    "exclusions": "Mere motivation, later applications, implementation correspondence, and transitive closure are not dependency edges."
+  },
+  "auxiliary_nodes": [
+    {
+      "id": "SAT",
+      "section": "3.2.2",
+      "title": "Satisfaction predicate (Equation 24)"
+    },
+    {
+      "id": "R.base",
+      "section": "4.2",
+      "title": "Base operational rules"
+    },
+    {
+      "id": "R.withdraw",
+      "section": "4.3.1",
+      "title": "Withdrawal rules"
+    },
+    {
+      "id": "R.iter",
+      "section": "4.3.2",
+      "title": "Iteration lifecycle rules"
+    },
+    {
+      "id": "A.async",
+      "section": "4.3.3",
+      "title": "Asynchronous inertia restriction"
+    },
+    {
+      "id": "R.fail",
+      "section": "4.3.4",
+      "title": "Failing iterator refinement and L-Raise"
+    },
+    {
+      "id": "R.full",
+      "section": "4.3-4.4",
+      "title": "Full ten-rule calculus"
+    },
+    {
+      "id": "Table1",
+      "section": "4.4",
+      "title": "Rule decomposition into state maps and control edits"
+    }
+  ],
+  "numbered_nodes": [
+    {
+      "id": "D1",
+      "kind": "Definition",
+      "number": 1,
+      "section": "3.1.1",
+      "title": "Twisted composition of transformation pairs"
+    },
+    {
+      "id": "D2",
+      "kind": "Definition",
+      "number": 2,
+      "section": "3.1.1",
+      "title": "Effect context"
+    },
+    {
+      "id": "D3",
+      "kind": "Definition",
+      "number": 3,
+      "section": "3.1.1",
+      "title": "Tracking transformation"
+    },
+    {
+      "id": "T4",
+      "kind": "Theorem",
+      "number": 4,
+      "section": "3.1.1",
+      "title": "Projection of tracking"
+    },
+    {
+      "id": "T5",
+      "kind": "Theorem",
+      "number": 5,
+      "section": "3.1.1",
+      "title": "Tracking is a monoid homomorphism"
+    },
+    {
+      "id": "D6",
+      "kind": "Definition",
+      "number": 6,
+      "section": "3.1.1",
+      "title": "Recovery transformation"
+    },
+    {
+      "id": "T7",
+      "kind": "Theorem",
+      "number": 7,
+      "section": "3.1.1",
+      "title": "One-step recovery invariance"
+    },
+    {
+      "id": "D8",
+      "kind": "Definition",
+      "number": 8,
+      "section": "3.1.2",
+      "title": "Effect functions and witnessed effect functions"
+    },
+    {
+      "id": "D9",
+      "kind": "Definition",
+      "number": 9,
+      "section": "3.1.2",
+      "title": "Effect composition"
+    },
+    {
+      "id": "T10",
+      "kind": "Theorem",
+      "number": 10,
+      "section": "3.1.2",
+      "title": "Monoid of effects and embedding of uniform pairs"
+    },
+    {
+      "id": "T11",
+      "kind": "Theorem",
+      "number": 11,
+      "section": "3.1.2",
+      "title": "Witnessing survives composition"
+    },
+    {
+      "id": "D12",
+      "kind": "Definition",
+      "number": 12,
+      "section": "3.1.2",
+      "title": "Lift of an effect to the effect context"
+    },
+    {
+      "id": "T13",
+      "kind": "Theorem",
+      "number": 13,
+      "section": "3.1.2",
+      "title": "The effect lift preserves composition"
+    },
+    {
+      "id": "T14",
+      "kind": "Theorem",
+      "number": 14,
+      "section": "3.1.2",
+      "title": "Projection compatibility across effect levels"
+    },
+    {
+      "id": "T15",
+      "kind": "Theorem",
+      "number": 15,
+      "section": "3.1.2",
+      "title": "Exact behavior of the lifted inverse"
+    },
+    {
+      "id": "T16",
+      "kind": "Theorem",
+      "number": 16,
+      "section": "3.1.2",
+      "title": "LIFO recovery for witnessed effects"
+    },
+    {
+      "id": "D17",
+      "kind": "Definition",
+      "number": 17,
+      "section": "3.1.3",
+      "title": "Transformation monoid of an effect"
+    },
+    {
+      "id": "L18",
+      "kind": "Lemma",
+      "number": 18,
+      "section": "3.1.3",
+      "title": "Generator commutation and composition closure"
+    },
+    {
+      "id": "D19",
+      "kind": "Definition",
+      "number": 19,
+      "section": "3.1.3",
+      "title": "Independence of effect functions"
+    },
+    {
+      "id": "T20",
+      "kind": "Theorem",
+      "number": 20,
+      "section": "3.1.3",
+      "title": "Selective removal across later independent effects"
+    },
+    {
+      "id": "C21",
+      "kind": "Corollary",
+      "number": 21,
+      "section": "3.1.3",
+      "title": "Arbitrary-order recovery"
+    },
+    {
+      "id": "D22",
+      "kind": "Definition",
+      "number": 22,
+      "section": "3.2.1",
+      "title": "Finite dependent partial-map coeffect context"
+    },
+    {
+      "id": "D23",
+      "kind": "Definition",
+      "number": 23,
+      "section": "3.2.1",
+      "title": "Basic get and revertible set"
+    },
+    {
+      "id": "D24",
+      "kind": "Definition",
+      "number": 24,
+      "section": "3.2.1",
+      "title": "Coeffect interface at a key and its context lift"
+    },
+    {
+      "id": "D25",
+      "kind": "Definition",
+      "number": 25,
+      "section": "3.2.2",
+      "title": "Coeffect specifications"
+    },
+    {
+      "id": "D26",
+      "kind": "Definition",
+      "number": 26,
+      "section": "3.2.2",
+      "title": "Reactive transition classifier notify"
+    },
+    {
+      "id": "D27",
+      "kind": "Definition",
+      "number": 27,
+      "section": "3.2.3",
+      "title": "In-place and derived realizations"
+    },
+    {
+      "id": "D28",
+      "kind": "Definition",
+      "number": 28,
+      "section": "3.2.3",
+      "title": "Isolation context"
+    },
+    {
+      "id": "D29",
+      "kind": "Definition",
+      "number": 29,
+      "section": "3.2.3",
+      "title": "Isolation-aware get, set, and isolate"
+    },
+    {
+      "id": "D30",
+      "kind": "Definition",
+      "number": 30,
+      "section": "3.2.3",
+      "title": "Interception context and specification"
+    },
+    {
+      "id": "D31",
+      "kind": "Definition",
+      "number": 31,
+      "section": "3.2.3",
+      "title": "Interception-aware get, set, and intercept"
+    },
+    {
+      "id": "D32",
+      "kind": "Definition",
+      "number": 32,
+      "section": "3.3.1",
+      "title": "Recursive unified context"
+    },
+    {
+      "id": "D33",
+      "kind": "Definition",
+      "number": 33,
+      "section": "3.3.2",
+      "title": "Observational relation on coeffect contexts and states"
+    },
+    {
+      "id": "D34",
+      "kind": "Definition",
+      "number": 34,
+      "section": "3.3.2",
+      "title": "Tests and operation-induced indistinguishability"
+    },
+    {
+      "id": "L35",
+      "kind": "Lemma",
+      "number": 35,
+      "section": "3.3.2",
+      "title": "Indistinguishability is the coarsest operation-respecting relation"
+    },
+    {
+      "id": "D36",
+      "kind": "Definition",
+      "number": 36,
+      "section": "3.3.2",
+      "title": "Equivalence-respecting and pointwise-related maps"
+    },
+    {
+      "id": "D37",
+      "kind": "Definition",
+      "number": 37,
+      "section": "3.3.2",
+      "title": "Witnessed effects modulo observational equivalence"
+    },
+    {
+      "id": "L38",
+      "kind": "Lemma",
+      "number": 38,
+      "section": "3.3.2",
+      "title": "Transport of Section 3.1 equalities to observational equivalence"
+    },
+    {
+      "id": "D39",
+      "kind": "Definition",
+      "number": 39,
+      "section": "3.3.2",
+      "title": "Operation independence and commutative keys"
+    },
+    {
+      "id": "T40",
+      "kind": "Theorem",
+      "number": 40,
+      "section": "3.3.2",
+      "title": "Operations at distinct keys are independent"
+    },
+    {
+      "id": "D41",
+      "kind": "Definition",
+      "number": 41,
+      "section": "3.3.2",
+      "title": "Coeffect-mediated effect functions"
+    },
+    {
+      "id": "T42",
+      "kind": "Theorem",
+      "number": 42,
+      "section": "3.3.2",
+      "title": "Independence of coeffect-mediated effect functions"
+    },
+    {
+      "id": "D43",
+      "kind": "Definition",
+      "number": 43,
+      "section": "4.1",
+      "title": "Components"
+    },
+    {
+      "id": "D44",
+      "kind": "Definition",
+      "number": 44,
+      "section": "4.1",
+      "title": "Fibers and the base lifecycle state"
+    },
+    {
+      "id": "D45",
+      "kind": "Definition",
+      "number": 45,
+      "section": "4.1",
+      "title": "Registry, derived coeffect context, and providers"
+    },
+    {
+      "id": "D46",
+      "kind": "Definition",
+      "number": 46,
+      "section": "4.2",
+      "title": "Target view and base quiescence"
+    },
+    {
+      "id": "D47",
+      "kind": "Definition",
+      "number": 47,
+      "section": "4.2",
+      "title": "Nested registration primitive"
+    },
+    {
+      "id": "D48",
+      "kind": "Definition",
+      "number": 48,
+      "section": "4.2",
+      "title": "Confinement"
+    },
+    {
+      "id": "D49",
+      "kind": "Definition",
+      "number": 49,
+      "section": "4.3",
+      "title": "Extended lifecycle, installed/failed predicates, and quiescence"
+    },
+    {
+      "id": "D50",
+      "kind": "Definition",
+      "number": 50,
+      "section": "4.3.1",
+      "title": "Relied-upon relation"
+    },
+    {
+      "id": "D51",
+      "kind": "Definition",
+      "number": 51,
+      "section": "4.3.2",
+      "title": "Witnessed effect iterators"
+    },
+    {
+      "id": "D52",
+      "kind": "Definition",
+      "number": 52,
+      "section": "4.3.2",
+      "title": "Effect-iterator transformation"
+    },
+    {
+      "id": "D53",
+      "kind": "Definition",
+      "number": 53,
+      "section": "4.4",
+      "title": "Indexed traces, episodes, step factorization, and state relations"
+    },
+    {
+      "id": "L54",
+      "kind": "Lemma",
+      "number": 54,
+      "section": "4.4",
+      "title": "Structural write facts"
+    },
+    {
+      "id": "L55",
+      "kind": "Lemma",
+      "number": 55,
+      "section": "4.4",
+      "title": "Observational-equivalence invariance"
+    },
+    {
+      "id": "L56",
+      "kind": "Lemma",
+      "number": 56,
+      "section": "4.4",
+      "title": "Equivariance under fiber-name renaming"
+    },
+    {
+      "id": "L57",
+      "kind": "Lemma",
+      "number": 57,
+      "section": "4.4",
+      "title": "Vestigial entries"
+    },
+    {
+      "id": "D58",
+      "kind": "Definition",
+      "number": 58,
+      "section": "4.4.1",
+      "title": "Well-formed registry"
+    },
+    {
+      "id": "T59",
+      "kind": "Theorem",
+      "number": 59,
+      "section": "4.4.1",
+      "title": "Preservation of registry well-formedness"
+    },
+    {
+      "id": "D60",
+      "kind": "Definition",
+      "number": 60,
+      "section": "4.4.2",
+      "title": "Iterator reach, length, transformation monoid, and independence"
+    },
+    {
+      "id": "T61",
+      "kind": "Theorem",
+      "number": 61,
+      "section": "4.4.2",
+      "title": "Recovery exactness"
+    },
+    {
+      "id": "C62",
+      "kind": "Corollary",
+      "number": 62,
+      "section": "4.4.2",
+      "title": "Terminal recovery"
+    },
+    {
+      "id": "T63",
+      "kind": "Theorem",
+      "number": 63,
+      "section": "4.4.3",
+      "title": "Provider-consumer ordering"
+    },
+    {
+      "id": "T64",
+      "kind": "Theorem",
+      "number": 64,
+      "section": "4.4.3",
+      "title": "Resolution coherence"
+    },
+    {
+      "id": "D65",
+      "kind": "Definition",
+      "number": 65,
+      "section": "4.4.4",
+      "title": "Precedence relation"
+    },
+    {
+      "id": "T66",
+      "kind": "Theorem",
+      "number": 66,
+      "section": "4.4.4",
+      "title": "Progress and lifecycle termination"
+    },
+    {
+      "id": "D67",
+      "kind": "Definition",
+      "number": 67,
+      "section": "4.4.5",
+      "title": "Support relation and support set"
+    },
+    {
+      "id": "L68",
+      "kind": "Lemma",
+      "number": 68,
+      "section": "4.4.5",
+      "title": "Support is well founded"
+    },
+    {
+      "id": "D69",
+      "kind": "Definition",
+      "number": 69,
+      "section": "4.4.5",
+      "title": "Totality on declared provision"
+    },
+    {
+      "id": "L70",
+      "kind": "Lemma",
+      "number": 70,
+      "section": "4.4.5",
+      "title": "Support at quiescence"
+    },
+    {
+      "id": "L71",
+      "kind": "Lemma",
+      "number": 71,
+      "section": "4.4.5",
+      "title": "Transposition of adjacent independent steps"
+    },
+    {
+      "id": "L72",
+      "kind": "Lemma",
+      "number": 72,
+      "section": "4.4.5",
+      "title": "Deletion of a closed episode"
+    },
+    {
+      "id": "T73",
+      "kind": "Theorem",
+      "number": 73,
+      "section": "4.4.5",
+      "title": "Canonical form and confluence"
+    },
+    {
+      "id": "D74",
+      "kind": "Definition",
+      "number": 74,
+      "section": "5.2.1",
+      "title": "Declarative configuration entry"
+    }
+  ],
+  "edges": [
+    {
+      "source": "D22",
+      "target": "SAT",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D25",
+      "target": "SAT",
+      "role": "construction",
+      "evidence": "forward"
+    },
+    {
+      "source": "D43",
+      "target": "R.base",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "R.base",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "R.base",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "R.base",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "R.base",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "R.withdraw",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "R.withdraw",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D50",
+      "target": "R.withdraw",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "R.iter",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "R.iter",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "R.iter",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "R.iter",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D52",
+      "target": "R.iter",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "A.async",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.iter",
+      "target": "A.async",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "R.fail",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "R.fail",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D52",
+      "target": "R.fail",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.iter",
+      "target": "R.fail",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.base",
+      "target": "R.full",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.withdraw",
+      "target": "R.full",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.iter",
+      "target": "R.full",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "A.async",
+      "target": "R.full",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.fail",
+      "target": "R.full",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "R.full",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D48",
+      "target": "R.full",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "Table1",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "Table1",
+      "role": "construction",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D2",
+      "target": "D3",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "T4",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D3",
+      "target": "T4",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "T4",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D3",
+      "target": "T4",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D1",
+      "target": "T5",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "T5",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D3",
+      "target": "T5",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D1",
+      "target": "T5",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D2",
+      "target": "T5",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D3",
+      "target": "T5",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D2",
+      "target": "D6",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "T7",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D3",
+      "target": "T7",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D6",
+      "target": "T7",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D3",
+      "target": "T7",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D6",
+      "target": "T7",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D2",
+      "target": "D8",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "D9",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "D9",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D1",
+      "target": "T10",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "T10",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D9",
+      "target": "T10",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D1",
+      "target": "T10",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "T10",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D9",
+      "target": "T10",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "T11",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T10",
+      "target": "T11",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "T11",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D9",
+      "target": "T11",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "T10",
+      "target": "T11",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "D12",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "D12",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D3",
+      "target": "D12",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "T13",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D9",
+      "target": "T13",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D12",
+      "target": "T13",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D12",
+      "target": "T13",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T5",
+      "target": "T13",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D9",
+      "target": "T13",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "T14",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D12",
+      "target": "T14",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "T14",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D12",
+      "target": "T14",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T4",
+      "target": "T14",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "T15",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D12",
+      "target": "T15",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "T15",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D12",
+      "target": "T15",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D3",
+      "target": "T15",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "T15",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "T16",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "T16",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D12",
+      "target": "T16",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "T7",
+      "target": "T16",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T15",
+      "target": "T16",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "T16",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D12",
+      "target": "T16",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "D17",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D17",
+      "target": "L18",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D9",
+      "target": "L18",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "L18",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D9",
+      "target": "L18",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D17",
+      "target": "L18",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "L18",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "D19",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D17",
+      "target": "D19",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "T20",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D19",
+      "target": "T20",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D19",
+      "target": "T20",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "T20",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D17",
+      "target": "T20",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "C21",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D19",
+      "target": "C21",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T20",
+      "target": "C21",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T20",
+      "target": "C21",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D19",
+      "target": "C21",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D22",
+      "target": "D23",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D22",
+      "target": "D24",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "D24",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D22",
+      "target": "D25",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D22",
+      "target": "D26",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D25",
+      "target": "D26",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "SAT",
+      "target": "D26",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "D27",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D22",
+      "target": "D28",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D28",
+      "target": "D29",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D27",
+      "target": "D29",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D23",
+      "target": "D29",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D22",
+      "target": "D30",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D25",
+      "target": "D30",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D30",
+      "target": "D31",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D27",
+      "target": "D31",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D23",
+      "target": "D31",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "D32",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D22",
+      "target": "D32",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D22",
+      "target": "D33",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D24",
+      "target": "D33",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D32",
+      "target": "D33",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D24",
+      "target": "D34",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D17",
+      "target": "D34",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D34",
+      "target": "L35",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D24",
+      "target": "L35",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D34",
+      "target": "L35",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D24",
+      "target": "L35",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D33",
+      "target": "D36",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D2",
+      "target": "D36",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "D37",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D33",
+      "target": "D37",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D36",
+      "target": "D37",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D37",
+      "target": "L38",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D37",
+      "target": "L38",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T7",
+      "target": "L38",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D36",
+      "target": "L38",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D1",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "D2",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "D3",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T4",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T5",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "D6",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T7",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "D8",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "D9",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T10",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T11",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "D12",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T13",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T14",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T15",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T16",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "D17",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "L18",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "D19",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "T20",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "C21",
+      "target": "L38",
+      "role": "scope",
+      "evidence": "explicit-section-reference"
+    },
+    {
+      "source": "D24",
+      "target": "D39",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D17",
+      "target": "D39",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D19",
+      "target": "D39",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D34",
+      "target": "D39",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L38",
+      "target": "D39",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D24",
+      "target": "T40",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D39",
+      "target": "T40",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D24",
+      "target": "T40",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L18",
+      "target": "T40",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D22",
+      "target": "T40",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D17",
+      "target": "T40",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D39",
+      "target": "T40",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "D41",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D9",
+      "target": "D41",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "T10",
+      "target": "D41",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D24",
+      "target": "D41",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D41",
+      "target": "T42",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D39",
+      "target": "T42",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D19",
+      "target": "T42",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L38",
+      "target": "T42",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D41",
+      "target": "T42",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L18",
+      "target": "T42",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D19",
+      "target": "T42",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T40",
+      "target": "T42",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D39",
+      "target": "T42",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D17",
+      "target": "T42",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D9",
+      "target": "T42",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "T10",
+      "target": "T42",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D24",
+      "target": "T42",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D32",
+      "target": "D43",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D25",
+      "target": "D43",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "D43",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D22",
+      "target": "D43",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D23",
+      "target": "D43",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "D44",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D22",
+      "target": "D44",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "D44",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "D44",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "D45",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "D45",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "SAT",
+      "target": "D45",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D22",
+      "target": "D45",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D25",
+      "target": "D45",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "D46",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D46",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "SAT",
+      "target": "D46",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "D47",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.base",
+      "target": "D47",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "D47",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D47",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "D47",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "D47",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "D47",
+      "role": "statement",
+      "evidence": "forward"
+    },
+    {
+      "source": "D47",
+      "target": "D48",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D43",
+      "target": "D48",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "D48",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D48",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D8",
+      "target": "D48",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "D48",
+      "role": "statement",
+      "evidence": "forward"
+    },
+    {
+      "source": "D46",
+      "target": "D49",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D51",
+      "target": "D49",
+      "role": "statement",
+      "evidence": "forward"
+    },
+    {
+      "source": "R.fail",
+      "target": "D49",
+      "role": "statement",
+      "evidence": "forward"
+    },
+    {
+      "source": "D44",
+      "target": "D49",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D49",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "D50",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D50",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "D50",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D33",
+      "target": "D51",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D37",
+      "target": "D51",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D8",
+      "target": "D51",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D36",
+      "target": "D51",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "D52",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D2",
+      "target": "D52",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D3",
+      "target": "D52",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D12",
+      "target": "D52",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D46",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D47",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D50",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D51",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D33",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D36",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D37",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L38",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "D53",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D48",
+      "target": "L54",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "L54",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "L54",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "L54",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "L54",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L54",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "L54",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D48",
+      "target": "L54",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "L54",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L54",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "L54",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L54",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D43",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D50",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D33",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D36",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D37",
+      "target": "L55",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D46",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D50",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D53",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D33",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D36",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D37",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L55",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D58",
+      "target": "L56",
+      "role": "statement",
+      "evidence": "forward"
+    },
+    {
+      "source": "D44",
+      "target": "L56",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "L56",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L56",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L56",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "L56",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "L56",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "L56",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D48",
+      "target": "L56",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D50",
+      "target": "L56",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D58",
+      "target": "L56",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L56",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L57",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "L57",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "L57",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "L57",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "L57",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D50",
+      "target": "L57",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L57",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "L57",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "L57",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D48",
+      "target": "L57",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "L57",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D50",
+      "target": "L57",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L57",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "L54",
+      "target": "L57",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "L57",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L57",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D58",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D43",
+      "target": "D58",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "D58",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "D58",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D58",
+      "target": "T59",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D53",
+      "target": "T59",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "T59",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D50",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "L54",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "T59",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D17",
+      "target": "D60",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D19",
+      "target": "D60",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D36",
+      "target": "D60",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D47",
+      "target": "D60",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D51",
+      "target": "D60",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "D60",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "D60",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.fail",
+      "target": "D60",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T61",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D60",
+      "target": "T61",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "T61",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "T61",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D48",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D53",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L54",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L57",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D60",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "T7",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D36",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D37",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "L38",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "Table1",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "T61",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "T61",
+      "target": "C62",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "C62",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "C62",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D60",
+      "target": "C62",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "C62",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "C62",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "C62",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "L54",
+      "target": "C62",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T61",
+      "target": "C62",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "C62",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "C62",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "T63",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "T63",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "T63",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "T63",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "T63",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D50",
+      "target": "T63",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T63",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "SAT",
+      "target": "T63",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "T63",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "T63",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "T63",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "T63",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "T63",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D50",
+      "target": "T63",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T63",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L54",
+      "target": "T63",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "T63",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "T63",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "C62",
+      "target": "T64",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D46",
+      "target": "T64",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "T64",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T64",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D60",
+      "target": "T64",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.iter",
+      "target": "T64",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "A.async",
+      "target": "T64",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.fail",
+      "target": "T64",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "T64",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "T64",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T64",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "L54",
+      "target": "T64",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "C62",
+      "target": "T64",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "T64",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "T64",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "D65",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "D65",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D65",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D60",
+      "target": "T66",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D65",
+      "target": "T66",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "T66",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "T66",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "T66",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "T66",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T66",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "T66",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D47",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D50",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D65",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "L54",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T63",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "T66",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D65",
+      "target": "D67",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L68",
+      "target": "D67",
+      "role": "statement",
+      "evidence": "forward"
+    },
+    {
+      "source": "D43",
+      "target": "D67",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "D67",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D67",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D67",
+      "target": "L68",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D45",
+      "target": "L68",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L68",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D65",
+      "target": "L68",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D45",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D58",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T59",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D65",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D67",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L68",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "D69",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D44",
+      "target": "D69",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "D69",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "D69",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.iter",
+      "target": "D69",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D69",
+      "target": "L70",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "L70",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D65",
+      "target": "L70",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D67",
+      "target": "L70",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "L68",
+      "target": "L70",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "L70",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "L70",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "L70",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D47",
+      "target": "L70",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "L70",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D67",
+      "target": "L70",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L68",
+      "target": "L70",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D69",
+      "target": "L70",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L70",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D58",
+      "target": "L71",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D60",
+      "target": "L71",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "L71",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "L71",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L71",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L71",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D45",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D48",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D51",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D58",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D60",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D33",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D36",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "Table1",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L71",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D69",
+      "target": "L72",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D47",
+      "target": "L72",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "L72",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L72",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D60",
+      "target": "L72",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D65",
+      "target": "L72",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "L70",
+      "target": "L72",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D50",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D58",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "T59",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D60",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "C62",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D65",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "L54",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L57",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L70",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "R.full",
+      "target": "L72",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D67",
+      "target": "T73",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D69",
+      "target": "T73",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L56",
+      "target": "T73",
+      "role": "statement",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "T73",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T73",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D60",
+      "target": "T73",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D65",
+      "target": "T73",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D46",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D49",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D53",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D58",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "T59",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D60",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D65",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D67",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L54",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L56",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L68",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L70",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L71",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L72",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "T66",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "Table1",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "R.full",
+      "target": "T73",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D28",
+      "target": "D74",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D29",
+      "target": "D74",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D30",
+      "target": "D74",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D31",
+      "target": "D74",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D43",
+      "target": "D74",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D44",
+      "target": "D74",
+      "role": "statement",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D47",
+      "target": "D74",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D49",
+      "target": "D74",
+      "role": "proof-or-justification",
+      "evidence": "implicit"
+    },
+    {
+      "source": "D67",
+      "target": "D74",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "D69",
+      "target": "D74",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    },
+    {
+      "source": "L70",
+      "target": "D74",
+      "role": "proof-or-justification",
+      "evidence": "explicit"
+    }
+  ]
+}

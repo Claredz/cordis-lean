@@ -1,0 +1,1573 @@
+{
+  "metadata": {
+    "title": "DeepSeek Harness: Formalization Disposition Specification",
+    "specification_version": "1.0-baseline",
+    "created_on": "2026-08-25",
+    "source_title": "A Programming Paradigm for Spatiotemporal Composability",
+    "source_sha256": "4d48478dc0b6222d9f74d7db10ee776449b1209eb112632336544d32a49db97f",
+    "dependency_graph": {
+      "title": "DeepSeek Harness: Definition and Result Dependency Graph",
+      "version": "1.0-frozen",
+      "artifact_sha256": "8f99db87d7aa4d856657abdaf469d9941d3af7fea88ababd2e58cba49041ded8",
+      "immutable_in_this_specification": true
+    },
+    "scope": "Disposition of every numbered and auxiliary formal item; no Lean declaration names, module graph, tactics, ownership, or schedule.",
+    "normative_rule": "This file may annotate but must not add, remove, or redirect dependency edges from graph version 1.0-frozen."
+  },
+  "field_definitions": {
+    "target_layer": "The mathematical or refinement layer in which the item belongs.",
+    "treatment": "Whether to formalize directly, repair, subsume, retain as exposition, or defer.",
+    "paper_relation": "How the intended artifact relates to the paper formulation.",
+    "intended_artifact": "The proof-assistant-level kind of deliverable, without committing to a Lean identifier or concrete module.",
+    "blocking_decisions": "Global architecture decisions that must be resolved before the item is implementation-ready.",
+    "readiness": "Derived status: ready, decision-blocked, non-core, or later-phase.",
+    "rationale": "Reason for the disposition; not a new dependency edge."
+  },
+  "target_layers": {
+    "EFFECT-CORE": "Revertible-effect algebra and local recovery (Section 3.1).",
+    "COEFFECT-FLAT": "Typed flat coeffect store, specifications, and reactivity (Sections 3.2.1-3.2.2).",
+    "COEFFECT-SCOPED": "Isolation, interception, and derived-context extensions (Section 3.2.3).",
+    "OBSERVATIONAL": "Observational relations, tests, and independence (Section 3.3.2).",
+    "CALCULUS-SHELL": "Components, fibers, registries, targets, and shared calculus infrastructure (Sections 4.1-4.2).",
+    "CALCULUS-BASE": "The atomic base lifecycle, retained only as a view or simulated fragment (Section 4.2).",
+    "CALCULUS-EXTENDED": "Guarded, iterative, asynchronous, and failure-aware lifecycle semantics (Section 4.3).",
+    "METATHEORY": "Trace infrastructure and the global results of Section 4.4.",
+    "IMPLEMENTATION-REFINEMENT": "Configuration and implementation correspondence beyond the core calculus (Section 5)."
+  },
+  "treatments": {
+    "DIRECT": "Give the item its own formal declaration or proof, preserving its intended mathematical content.",
+    "REPAIR": "Give the item its own formal artifact after a type, logic, computability, scope, or hypothesis repair.",
+    "SUBSUMED": "Do not duplicate the paper item as a primary artifact; recover it as an instance, corollary, derived view, or simulation theorem.",
+    "EXPOSITORY": "Keep the item as a design/refinement note; it is not a proposition or datatype needed by the core metatheory.",
+    "DEFER": "The item is a legitimate later formal target, but belongs to an implementation-refinement phase rather than the paper-metatheory core."
+  },
+  "paper_relations": {
+    "faithful": "The formal artifact states the same mathematical content, modulo ordinary proof-assistant encoding.",
+    "faithful-explicit": "The content is preserved while an implicit domain, scope, finiteness, reachability, or inherited hypothesis is made explicit.",
+    "type-repair": "The intended construction is retained but an ill-scoped, partial, dependent, or recursive type formulation is replaced.",
+    "logical-repair": "The intended claim is retained but a vacuous, ambiguous, overstrong, or under-specified logical formulation is corrected.",
+    "computability-repair": "The semantic proposition is separated from the extra data/instances needed for executable decision procedures.",
+    "decomposition": "One compound paper item becomes several declarations and linking lemmas without changing its intended content.",
+    "derived": "The paper item is generated as a proved view or report from the authoritative formal object rather than maintained independently.",
+    "generalization": "A relation-parametric or otherwise more general artifact yields the paper item by instantiation.",
+    "specialization": "The paper item is recovered as a restricted fragment or specialization of a more general model.",
+    "replacement": "The literal paper object cannot serve as the formal object; a different construction must realize its required interface and be related back to the intent.",
+    "refinement-only": "The item concerns runtime realization or implementation correspondence rather than the abstract calculus itself."
+  },
+  "global_decisions": {
+    "BD-STATE": {
+      "title": "Unified state and context architecture",
+      "question": "What Lean-compatible object replaces the literal recursive equation for Gamma-infinity and the later State/Registry/Fiber cycle while exposing the coeffect projection, effect action, local tables, and frame structure?",
+      "acceptance": "Choose a construction or abstract interface, state its invariants, and prove that every later operation is well typed. Do not assume a literal fixed point or store unrestricted State → State functions inside the State datatype."
+    },
+    "BD-EQUIV": {
+      "title": "Equality and observational-relation architecture",
+      "question": "Will the effect theory be relation-parametric from the start, or will an equality theory be transported to a separate observational layer, and what can a test observe about yielded inverses?",
+      "acceptance": "Fix the equivalence(s), map-respect and pointwise-map relations, congruence laws, yielded-inverse observation/stability, and the distinct roles of the paper relations ≃ and ≈."
+    },
+    "BD-COEFFECT": {
+      "title": "Finite dependent stores, specifications, and partiality",
+      "question": "How are finite dependent maps, semantic specifications, executable specifications, and failing/preconditioned operations represented?",
+      "acceptance": "Support dependent lookup/update/erase and finite key enumeration; distinguish Prop-level satisfaction from executable notification; state whether invalid operations use proof arguments, Option, or Except."
+    },
+    "BD-SCOPED": {
+      "title": "Type-correct scoped coeffects",
+      "question": "How are realm resolution and interception metadata typed, composed, inherited, and embedded over the flat store?",
+      "acceptance": "Give a total resolver with type-preservation, a precise metadata merge order, derived-context semantics, and a flat-model embedding with lookup/update preservation."
+    },
+    "BD-ITER": {
+      "title": "Iterator and failing-iterator representation",
+      "question": "Are iterators finite inductive trees, coalgebraic objects with a productivity/boundedness predicate, or another executable representation?",
+      "acceptance": "Define one-step execution, continuation reach, length/boundedness, observational relation or bisimulation, folding/tracking, and failure without assuming an unjustified recursive fixed point."
+    },
+    "BD-STAGING": {
+      "title": "Base versus extended calculus staging",
+      "question": "Is the base calculus a separate transition system with a simulation into the full calculus, or a derived fragment/view of one final system?",
+      "acceptance": "Avoid duplicated metatheory while retaining a precise correspondence for the atomic base rules and lifecycle states."
+    },
+    "BD-CONTROL": {
+      "title": "Control, nondeterminism, asynchrony, and failure",
+      "question": "How are orchestration choices, lifecycle nondeterminism, asynchronous landing restrictions, exceptions, and rule-labelled traces represented?",
+      "acceptance": "Separate external inputs from internal lifecycle steps; define admissible traces and maximal runs; make every rule premise and failure/landing outcome explicit."
+    },
+    "BD-NAMES": {
+      "title": "Fresh fiber names and equivariance",
+      "question": "How are fresh allocation, name supply, possible runtime atom reuse, fiber incarnations, and alpha-renaming modeled?",
+      "acceptance": "Use globally fresh trace identities or allocation-event/generation IDs for theorem-level fibers; relate any runtime atom reuse by refinement. Prove a well-defined renaming action sufficient for Lemma 56 and Theorem 73."
+    },
+    "BD-SUPPORT": {
+      "title": "Support recursion and well-foundedness",
+      "question": "Is support defined by well-founded recursion, an inductive least fixed point, or another construction that avoids the D67/L68 forward cycle?",
+      "acceptance": "Define support before using it, prove existence/uniqueness under explicit reachability and acyclicity hypotheses, and expose the exact assumptions inherited by Lemmas 70/72 and Theorem 73."
+    }
+  },
+  "high_impact_findings": [
+    {
+      "id": "F-D8-WITNESS",
+      "nodes": [
+        "D8"
+      ],
+      "status": "formula defect",
+      "finding": "The displayed nested dependent-pair witness can be discharged vacuously by choosing an output pair different from e(gamma). The prose-intended let-bound witness is the formal target."
+    },
+    {
+      "id": "F-D26-DECIDE",
+      "nodes": [
+        "D25",
+        "SAT",
+        "D26"
+      ],
+      "status": "invalid computability inference",
+      "finding": "Finite support of the current store does not decide satisfaction for an arbitrary d : Set K. Executable notification requires enumerable finite dependency data and decidable presence."
+    },
+    {
+      "id": "F-L35-INVERSE",
+      "nodes": [
+        "D24",
+        "D34",
+        "L35",
+        "D37"
+      ],
+      "status": "logical design gap",
+      "finding": "Tests over fixed generators show that each yielded inverse preserves indistinguishability, but not that different inverses selected at indistinguishable inputs are pointwise related. The observer or respect condition must change."
+    },
+    {
+      "id": "F-STATE-RECURSION",
+      "nodes": [
+        "D32",
+        "D44",
+        "D49",
+        "D51"
+      ],
+      "status": "representation blocker",
+      "finding": "There are two distinct recursive issues: the literal Gamma-infinity equation, and a concrete State containing fibers that contain State → State behavior. D51 is different: its iterator variable occurs positively, but finite versus coinductive semantics still must be chosen."
+    },
+    {
+      "id": "F-NAME-REUSE",
+      "nodes": [
+        "D47",
+        "D53",
+        "L54",
+        "L56",
+        "D60",
+        "T66",
+        "D65",
+        "L68",
+        "T73"
+      ],
+      "status": "identity ambiguity",
+      "finding": "The rules permit reissuing an atom after O-Remove, while later trace quantities treat one name as one immutable fiber. The theorem model needs allocation/generation identities or a trace-global no-reuse premise."
+    },
+    {
+      "id": "F-L68-CYCLE",
+      "nodes": [
+        "D67",
+        "L68",
+        "L70",
+        "L72",
+        "T73"
+      ],
+      "status": "counterexample outline to mechanize",
+      "finding": "The full rules appear to reach a state with acyclic precedence but cyclic combined support: a retired Reloading child can land a late registration after the former provider is removed, yielding r ≺ n, parent(n,c), and parent(c,r). Literal L68 is not accepted as a proof target."
+    },
+    {
+      "id": "F-T66-ORIGIN",
+      "nodes": [
+        "D53",
+        "T66"
+      ],
+      "status": "scope defect",
+      "finding": "D53 starts traces from an empty registry. Requiring every step of that same trace to be a lifecycle step makes T66 vacuous; the intended theorem is about lifecycle-only suffixes from reachable states."
+    }
+  ],
+  "summary": {
+    "numbered_items": 74,
+    "auxiliary_items": 8,
+    "total_dispositions": 82,
+    "treatment_counts_numbered": {
+      "DEFER": 1,
+      "DIRECT": 34,
+      "EXPOSITORY": 1,
+      "REPAIR": 37,
+      "SUBSUMED": 1
+    },
+    "treatment_counts_all": {
+      "DEFER": 1,
+      "DIRECT": 34,
+      "EXPOSITORY": 1,
+      "REPAIR": 41,
+      "SUBSUMED": 5
+    },
+    "target_layer_counts_all": {
+      "CALCULUS-BASE": 1,
+      "CALCULUS-EXTENDED": 9,
+      "CALCULUS-SHELL": 7,
+      "COEFFECT-FLAT": 6,
+      "COEFFECT-SCOPED": 5,
+      "EFFECT-CORE": 21,
+      "IMPLEMENTATION-REFINEMENT": 1,
+      "METATHEORY": 22,
+      "OBSERVATIONAL": 10
+    },
+    "readiness_counts_all": {
+      "decision-blocked": 66,
+      "later-phase": 1,
+      "non-core": 1,
+      "ready": 14
+    }
+  },
+  "numbered_dispositions": [
+    {
+      "id": "D1",
+      "kind": "Definition",
+      "number": 1,
+      "section": "3.1.1",
+      "title": "Twisted composition of transformation pairs",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Definition of forward/inverse transformation pairs with twisted multiplication.",
+      "blocking_decisions": [],
+      "rationale": "The construction is total, well typed, and is the algebraic base used by tracking.",
+      "readiness": "ready"
+    },
+    {
+      "id": "D2",
+      "kind": "Definition",
+      "number": 2,
+      "section": "3.1.1",
+      "title": "Effect context",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Effect-context type together with state and accumulator projections.",
+      "blocking_decisions": [],
+      "rationale": "The product Gamma × End(Gamma) is directly representable.",
+      "readiness": "ready"
+    },
+    {
+      "id": "D3",
+      "kind": "Definition",
+      "number": 3,
+      "section": "3.1.1",
+      "title": "Tracking transformation",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Tracking endomorphism and its basic simplification equations.",
+      "blocking_decisions": [],
+      "rationale": "The definition is total and fixes the composition order needed by later recovery proofs.",
+      "readiness": "ready"
+    },
+    {
+      "id": "T4",
+      "kind": "Theorem",
+      "number": 4,
+      "section": "3.1.1",
+      "title": "Projection of tracking",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Projection theorem for tracking.",
+      "blocking_decisions": [],
+      "rationale": "A direct extensional calculation; it is useful as a named rewrite lemma.",
+      "readiness": "ready"
+    },
+    {
+      "id": "T5",
+      "kind": "Theorem",
+      "number": 5,
+      "section": "3.1.1",
+      "title": "Tracking is a monoid homomorphism",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Monoid-homomorphism theorem for tracking.",
+      "blocking_decisions": [],
+      "rationale": "The statement is precise once D1-D3 are in place.",
+      "readiness": "ready"
+    },
+    {
+      "id": "D6",
+      "kind": "Definition",
+      "number": 6,
+      "section": "3.1.1",
+      "title": "Recovery transformation",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Recovery endomorphism and reset law.",
+      "blocking_decisions": [],
+      "rationale": "The definition is total and requires no extra system structure.",
+      "readiness": "ready"
+    },
+    {
+      "id": "T7",
+      "kind": "Theorem",
+      "number": 7,
+      "section": "3.1.1",
+      "title": "One-step recovery invariance",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "One-step recovery-invariance theorem.",
+      "blocking_decisions": [],
+      "rationale": "This is the local soundness invariant later reused under observational equivalence.",
+      "readiness": "ready"
+    },
+    {
+      "id": "D8",
+      "kind": "Definition",
+      "number": 8,
+      "section": "3.1.2",
+      "title": "Effect functions and witnessed effect functions",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "REPAIR",
+      "paper_relation": "logical-repair",
+      "intended_artifact": "Structures Effect and WitnessedEffect, with the witness stated as: for each input, the inverse returned by that very run restores the input.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "The displayed dependent-pair encoding can satisfy its implication vacuously by choosing a pair unequal to e(gamma). The let-bound/output-indexed predicate captures the prose intent. The equality/relational parameterization is architectural.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D9",
+      "kind": "Definition",
+      "number": 9,
+      "section": "3.1.2",
+      "title": "Effect composition",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Effect composition and unit.",
+      "blocking_decisions": [],
+      "rationale": "The Writer/Kleisli-style composition is total and directly executable.",
+      "readiness": "ready"
+    },
+    {
+      "id": "T10",
+      "kind": "Theorem",
+      "number": 10,
+      "section": "3.1.2",
+      "title": "Monoid of effects and embedding of uniform pairs",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Monoid laws for effects and homomorphic embedding of uniform transformation pairs.",
+      "blocking_decisions": [],
+      "rationale": "The theorem is sound for the unrefined effect carrier.",
+      "readiness": "ready"
+    },
+    {
+      "id": "T11",
+      "kind": "Theorem",
+      "number": 11,
+      "section": "3.1.2",
+      "title": "Witnessing survives composition",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Closure of repaired witnessed effects under composition, plus the uniform-left-inverse embedding theorem.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "The theorem preserves the paper intent once D8 is read non-vacuously; its proof should not preserve the faulty packaging.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D12",
+      "kind": "Definition",
+      "number": 12,
+      "section": "3.1.2",
+      "title": "Lift of an effect to the effect context",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Lift from an effect on Gamma to an effect on the tracked context.",
+      "blocking_decisions": [],
+      "rationale": "The formula is well typed and its returned higher-level inverse is explicit.",
+      "readiness": "ready"
+    },
+    {
+      "id": "T13",
+      "kind": "Theorem",
+      "number": 13,
+      "section": "3.1.2",
+      "title": "The effect lift preserves composition",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Composition-preservation theorem for the effect lift.",
+      "blocking_decisions": [],
+      "rationale": "The proof is a direct use of T5 and effect extensionality.",
+      "readiness": "ready"
+    },
+    {
+      "id": "T14",
+      "kind": "Theorem",
+      "number": 14,
+      "section": "3.1.2",
+      "title": "Projection compatibility across effect levels",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Forward- and inverse-projection compatibility lemmas.",
+      "blocking_decisions": [],
+      "rationale": "The two claims are exact and useful separately as rewrite lemmas.",
+      "readiness": "ready"
+    },
+    {
+      "id": "T15",
+      "kind": "Theorem",
+      "number": 15,
+      "section": "3.1.2",
+      "title": "Exact behavior of the lifted inverse",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "REPAIR",
+      "paper_relation": "logical-repair",
+      "intended_artifact": "A theorem family separating (a) the exact lifted-inverse equation, (b) the pointwise recovery invariant, and (c) the global iff criterion for lifted witnessing.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "The printed paragraph moves between one fixed returned inverse and global membership in the witnessed-effect class. The formal version must quantify the global criterion over every input.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T16",
+      "kind": "Theorem",
+      "number": 16,
+      "section": "3.1.2",
+      "title": "LIFO recovery for witnessed effects",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Inductive finite-sequence LIFO recovery theorem, including the intermediate soundness invariant.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "The result follows from the repaired witness and T15 without requiring independence.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D17",
+      "kind": "Definition",
+      "number": 17,
+      "section": "3.1.3",
+      "title": "Transformation monoid of an effect",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Generated transformation submonoid of an effect.",
+      "blocking_decisions": [],
+      "rationale": "The forward map and all possible returned inverses form a standard generated submonoid.",
+      "readiness": "ready"
+    },
+    {
+      "id": "L18",
+      "kind": "Lemma",
+      "number": 18,
+      "section": "3.1.3",
+      "title": "Generator commutation and composition closure",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Two lemmas: generator-wise commutation extends to generated monoids; composition introduces no generators outside the generated union.",
+      "blocking_decisions": [],
+      "rationale": "The paper packages two reusable algebraic facts under one number; separate declarations improve reuse without changing content.",
+      "readiness": "ready"
+    },
+    {
+      "id": "D19",
+      "kind": "Definition",
+      "number": 19,
+      "section": "3.1.3",
+      "title": "Independence of effect functions",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Symmetric effect-independence predicate with commutation and inverse-selection stability clauses.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "The definition is mathematically meaningful; only the later equality-versus-observation reading must be fixed globally.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T20",
+      "kind": "Theorem",
+      "number": 20,
+      "section": "3.1.3",
+      "title": "Selective removal across later independent effects",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Selective-removal theorem for a finite interleaving of pairwise-independent effects.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "The statement is a core theorem and should be proved at the same relation level chosen for D19.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "C21",
+      "kind": "Corollary",
+      "number": 21,
+      "section": "3.1.3",
+      "title": "Arbitrary-order recovery",
+      "target_layer": "EFFECT-CORE",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Arbitrary-permutation recovery corollary.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "It is a genuine consequence of T20 and pairwise independence, not a separate model.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D22",
+      "kind": "Definition",
+      "number": 22,
+      "section": "3.2.1",
+      "title": "Finite dependent partial-map coeffect context",
+      "target_layer": "COEFFECT-FLAT",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Abstract finite dependent partial-map interface, followed by one concrete finite implementation.",
+      "blocking_decisions": [
+        "BD-COEFFECT"
+      ],
+      "rationale": "Finite support is part of the paper object, but later local proofs should use only lookup/update laws unless enumeration is genuinely needed.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D23",
+      "kind": "Definition",
+      "number": 23,
+      "section": "3.2.1",
+      "title": "Basic get and revertible set",
+      "target_layer": "COEFFECT-FLAT",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Separate raw lookup/insert/erase operations from legal get/provide/revoke transitions and prove the successful provide transition witnessed.",
+      "blocking_decisions": [
+        "BD-COEFFECT",
+        "BD-EQUIV"
+      ],
+      "rationale": "The paper types get and set as partial while calling set an element of a total witnessed-effect class. Preconditions or failure must be represented rather than erased.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D24",
+      "kind": "Definition",
+      "number": 24,
+      "section": "3.2.1",
+      "title": "Coeffect interface at a key and its context lift",
+      "target_layer": "COEFFECT-FLAT",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Typed coeffect-operation record with argument/outcome types, partial-domain behavior, relation-respect obligations, and a key-local lift theorem.",
+      "blocking_decisions": [
+        "BD-COEFFECT",
+        "BD-EQUIV"
+      ],
+      "rationale": "The prose contains the needed obligations, but dependent partiality, yielded inverses, outcomes, and respect must be packaged so the lift is actually typed.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D25",
+      "kind": "Definition",
+      "number": 25,
+      "section": "3.2.2",
+      "title": "Coeffect specifications",
+      "target_layer": "COEFFECT-FLAT",
+      "treatment": "REPAIR",
+      "paper_relation": "computability-repair",
+      "intended_artifact": "Semantic specifications plus an explicitly finite/enumerable executable specification type and a relation between them.",
+      "blocking_decisions": [
+        "BD-COEFFECT"
+      ],
+      "rationale": "Set(K) is a valid semantic specification, but it does not by itself provide an executable enumeration or decidable emptiness/inclusion.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D26",
+      "kind": "Definition",
+      "number": 26,
+      "section": "3.2.2",
+      "title": "Reactive transition classifier notify",
+      "target_layer": "COEFFECT-FLAT",
+      "treatment": "REPAIR",
+      "paper_relation": "computability-repair",
+      "intended_artifact": "Prop-level transition classification and a computable notify function for executable specifications, with an adequacy theorem between them.",
+      "blocking_decisions": [
+        "BD-COEFFECT"
+      ],
+      "rationale": "Finite dom(sigma) alone does not decide satisfaction of an arbitrary predicate d. Executability requires finite/enumerable d and decidable presence.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D27",
+      "kind": "Definition",
+      "number": 27,
+      "section": "3.2.3",
+      "title": "In-place and derived realizations",
+      "target_layer": "COEFFECT-SCOPED",
+      "treatment": "EXPOSITORY",
+      "paper_relation": "refinement-only",
+      "intended_artifact": "Design note and later refinement obligations distinguishing in-place mutation from persistent derived contexts; no core theorem declaration.",
+      "blocking_decisions": [
+        "BD-SCOPED"
+      ],
+      "rationale": "Object identity, aliasing, and discarding a child context are realization concerns not captured by the abstract state-function type used in the paper.",
+      "readiness": "non-core"
+    },
+    {
+      "id": "D28",
+      "kind": "Definition",
+      "number": 28,
+      "section": "3.2.3",
+      "title": "Isolation context",
+      "target_layer": "COEFFECT-SCOPED",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Type-preserving isolation context with a finite override table, total resolver, and realm-indexed provider store.",
+      "blocking_decisions": [
+        "BD-COEFFECT",
+        "BD-SCOPED"
+      ],
+      "rationale": "The paper declares rho partial but applies it totally using a default, and V_r is not related to the V_k expected by a logical key. Both facts must be represented.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D29",
+      "kind": "Definition",
+      "number": 29,
+      "section": "3.2.3",
+      "title": "Isolation-aware get, set, and isolate",
+      "target_layer": "COEFFECT-SCOPED",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Isolation-aware lookup/provide/revoke/isolate operations, captured-realm inverse law, and flat-store compatibility lemmas.",
+      "blocking_decisions": [
+        "BD-COEFFECT",
+        "BD-SCOPED",
+        "BD-EQUIV"
+      ],
+      "rationale": "Return types cannot depend on an unresolved realm without a type-preservation witness; an inverse should delete the realm selected at application time rather than recompute an arbitrary later resolver.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D30",
+      "kind": "Definition",
+      "number": 30,
+      "section": "3.2.3",
+      "title": "Interception context and specification",
+      "target_layer": "COEFFECT-SCOPED",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Interception context/specification with per-key metadata monoids, provider functions, and presence separated from metadata.",
+      "blocking_decisions": [
+        "BD-COEFFECT",
+        "BD-SCOPED"
+      ],
+      "rationale": "The construction is viable, but the inheritance/default behavior and the relation between a metadata-bearing specification and its dependency domain must be explicit.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D31",
+      "kind": "Definition",
+      "number": 31,
+      "section": "3.2.3",
+      "title": "Interception-aware get, set, and intercept",
+      "target_layer": "COEFFECT-SCOPED",
+      "treatment": "REPAIR",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Interception-aware lookup/provide/revoke/intercept operations and nested-merge laws.",
+      "blocking_decisions": [
+        "BD-COEFFECT",
+        "BD-SCOPED",
+        "BD-EQUIV"
+      ],
+      "rationale": "Associativity and identity come from a monoid, but right bias does not. Merge order and any override law must be assumptions of the chosen metadata algebra.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D32",
+      "kind": "Definition",
+      "number": 32,
+      "section": "3.3.1",
+      "title": "Recursive unified context",
+      "target_layer": "CALCULUS-SHELL",
+      "treatment": "REPAIR",
+      "paper_relation": "replacement",
+      "intended_artifact": "A Lean-compatible unified-state interface plus a concrete realization or representation theorem sufficient for all later projections and updates.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-EQUIV"
+      ],
+      "rationale": "The literal equation mu Gamma. Gamma × (Gamma → Gamma) × Sigma is mixed-variance, violates the intended ordinary fixed-point reading, and faces a cardinality obstruction. It cannot be copied as an inductive type.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D33",
+      "kind": "Definition",
+      "number": 33,
+      "section": "3.3.2",
+      "title": "Observational relation on coeffect contexts and states",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "REPAIR",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Equivalence on coeffect stores and a lifted full-state relation defined through an explicit coeffect projection.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-EQUIV",
+        "BD-COEFFECT"
+      ],
+      "rationale": "The pointwise store relation is sound, but calling the lifted relation observational depends on the chosen system boundary and on proving it is an equivalence/congruence.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D34",
+      "kind": "Definition",
+      "number": 34,
+      "section": "3.3.2",
+      "title": "Tests and operation-induced indistinguishability",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "REPAIR",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Typed test syntax, partial evaluation semantics, outcome trace, yielded-inverse observations, and induced indistinguishability relation.",
+      "blocking_decisions": [
+        "BD-EQUIV",
+        "BD-COEFFECT"
+      ],
+      "rationale": "The prose definition quantifies over heterogeneous operations, arguments, inverses, and outcomes. The test language must also say whether it follows the inverse returned by this run or merely ranges over fixed inverse generators.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L35",
+      "kind": "Lemma",
+      "number": 35,
+      "section": "3.3.2",
+      "title": "Indistinguishability is the coarsest operation-respecting relation",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "REPAIR",
+      "paper_relation": "logical-repair",
+      "intended_artifact": "A corrected universal-property theorem after either strengthening tests to observe run-selected inverses or weakening the operation-respect relation; include a countermodel lemma for the rejected combination.",
+      "blocking_decisions": [
+        "BD-EQUIV",
+        "BD-COEFFECT"
+      ],
+      "rationale": "Prefixing by one fixed generator proves that each inverse preserves indistinguishability, but does not by itself prove that two different inverses selected at indistinguishable inputs are pointwise related. The paper proof conflates these obligations.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D36",
+      "kind": "Definition",
+      "number": 36,
+      "section": "3.3.2",
+      "title": "Equivalence-respecting and pointwise-related maps",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Definitions of relation-respecting maps, pointwise-related maps, and the induced product relation.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "These are standard relation-lifting constructions and should form the common congruence API.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D37",
+      "kind": "Definition",
+      "number": 37,
+      "section": "3.3.2",
+      "title": "Witnessed effects modulo observational equivalence",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "REPAIR",
+      "paper_relation": "logical-repair",
+      "intended_artifact": "Relation-parametric witnessed-effect record requiring effect respect, local recovery, and respect of every yielded inverse.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "This is the intended non-vacuous relational replacement for D8 and must identify the inverse actually returned by the run.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L38",
+      "kind": "Lemma",
+      "number": 38,
+      "section": "3.3.2",
+      "title": "Transport of Section 3.1 equalities to observational equivalence",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "SUBSUMED",
+      "paper_relation": "generalization",
+      "intended_artifact": "Instantiate a relation-parametric effect theory at observational equivalence and expose only a small transport/compatibility theorem family.",
+      "blocking_decisions": [
+        "BD-EQUIV"
+      ],
+      "rationale": "A single lemma claiming that every Section 3.1 equality transports is not a useful Lean proposition. Building the core algebra over a relation makes the paper claim an instance rather than duplicated metatheory.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D39",
+      "kind": "Definition",
+      "number": 39,
+      "section": "3.3.2",
+      "title": "Operation independence and commutative keys",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Operation-independence predicate including common-domain/definedness stability, relation-level lifted-effect independence, outcome stability, and key commutativity.",
+      "blocking_decisions": [
+        "BD-EQUIV",
+        "BD-COEFFECT"
+      ],
+      "rationale": "The extra outcome clause is essential, and partial operations require explicit common-domain premises rather than equations at undefined applications.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T40",
+      "kind": "Theorem",
+      "number": 40,
+      "section": "3.3.2",
+      "title": "Operations at distinct keys are independent",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Distinct-key independence theorem for the flat key-local store.",
+      "blocking_decisions": [
+        "BD-COEFFECT",
+        "BD-EQUIV"
+      ],
+      "rationale": "The theorem is correct for flat storage locations. It must be scoped as such: under isolation, distinct logical keys may share a realm and equal keys may resolve to different realms.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D41",
+      "kind": "Definition",
+      "number": 41,
+      "section": "3.3.2",
+      "title": "Coeffect-mediated effect functions",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Inductively generated predicate or typed syntax for outcome-dependent coeffect-mediated computations, with denotation into effects.",
+      "blocking_decisions": [
+        "BD-COEFFECT",
+        "BD-EQUIV"
+      ],
+      "rationale": "The least semantic set can be represented, but a typed constructor/denotation boundary avoids function-equality and heterogeneous-outcome problems.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T42",
+      "kind": "Theorem",
+      "number": 42,
+      "section": "3.3.2",
+      "title": "Independence of coeffect-mediated effect functions",
+      "target_layer": "OBSERVATIONAL",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Structural induction proving independence of two mediated computations under shared-key commutativity.",
+      "blocking_decisions": [
+        "BD-COEFFECT",
+        "BD-EQUIV"
+      ],
+      "rationale": "This is the main payoff of D39-D41 and should remain a standalone theorem.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D43",
+      "kind": "Definition",
+      "number": 43,
+      "section": "4.1",
+      "title": "Components",
+      "target_layer": "CALCULUS-SHELL",
+      "treatment": "REPAIR",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Component record containing requirements, declared provisions, effect/iterator, and an explicit no-write-outside-provision obligation.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-COEFFECT",
+        "BD-ITER"
+      ],
+      "rationale": "The triple is straightforward, but the crucial provision-frame condition is prose in the paper and must become data or a predicate. The effect carrier later changes to iterators.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D44",
+      "kind": "Definition",
+      "number": 44,
+      "section": "4.1",
+      "title": "Fibers and the base lifecycle state",
+      "target_layer": "CALCULUS-SHELL",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Lifecycle-parameterized fiber shell whose behavior and accumulator are action codes/semantics rather than unrestricted functions stored recursively in State; base and extended payloads are instances.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-ITER",
+        "BD-STAGING",
+        "BD-NAMES"
+      ],
+      "rationale": "Besides the lifecycle type changing later, a concrete State contains a registry of fibers that contain e and g : State → State. This negative State/Registry/Fiber cycle needs an action representation or abstract semantic interface.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D45",
+      "kind": "Definition",
+      "number": 45,
+      "section": "4.1",
+      "title": "Registry, derived coeffect context, and providers",
+      "target_layer": "CALCULUS-SHELL",
+      "treatment": "REPAIR",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Finite registry, parent-tree invariant, global state projections, active-table union, provider function, and uniqueness lemmas.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-COEFFECT",
+        "BD-NAMES"
+      ],
+      "rationale": "The paper combines data, invariants, derived views, and uniqueness reasoning in one definition; Lean needs these separated and the ambient “whatever else” state made explicit.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D46",
+      "kind": "Definition",
+      "number": 46,
+      "section": "4.2",
+      "title": "Target view and base quiescence",
+      "target_layer": "CALCULUS-SHELL",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Target-view function and quiescence predicate, parameterized over the chosen lifecycle view.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-STAGING"
+      ],
+      "rationale": "The definitions are precise once providers, retirement, and lifecycle observations are available.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D47",
+      "kind": "Definition",
+      "number": 47,
+      "section": "4.2",
+      "title": "Nested registration primitive",
+      "target_layer": "CALCULUS-SHELL",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Fresh-incarnation registration transition/action returning the allocated identity and a retirement inverse, plus its frame and witness laws.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "A rule that draws a name is nondeterministic or name-supply-parametric; theorem-level identity must also distinguish later reuse of the same runtime atom.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D48",
+      "kind": "Definition",
+      "number": 48,
+      "section": "4.2",
+      "title": "Confinement",
+      "target_layer": "CALCULUS-SHELL",
+      "treatment": "REPAIR",
+      "paper_relation": "logical-repair",
+      "intended_artifact": "Confinement predicate factored into explicit write-frame and read-noninterference relations, extended to iterator stages and registration.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-EQUIV",
+        "BD-ITER"
+      ],
+      "rationale": "The write clause is concrete, but “the part no table names” and agreement on provider restrictions need explicit projections/equivalences to be mechanically meaningful.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D49",
+      "kind": "Definition",
+      "number": 49,
+      "section": "4.3",
+      "title": "Extended lifecycle, installed/failed predicates, and quiescence",
+      "target_layer": "CALCULUS-EXTENDED",
+      "treatment": "REPAIR",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Final lifecycle datatype over the chosen action/iterator codes, installed/failed predicates, and extended quiescence, defined after iterator and failure outcomes.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-ITER",
+        "BD-STAGING",
+        "BD-CONTROL"
+      ],
+      "rationale": "The printed definition forward-refers to iterator/failure machinery, overloads the base Theta, and would store State-indexed behavior back inside State. Reordering plus the D44 action boundary removes these cycles.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D50",
+      "kind": "Definition",
+      "number": 50,
+      "section": "4.3.1",
+      "title": "Relied-upon relation",
+      "target_layer": "CALCULUS-EXTENDED",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Relied-upon relation over installed fibers and committed provider views.",
+      "blocking_decisions": [
+        "BD-STATE"
+      ],
+      "rationale": "The relation is finite and directly definable from the registry view.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D51",
+      "kind": "Definition",
+      "number": 51,
+      "section": "4.3.2",
+      "title": "Witnessed effect iterators",
+      "target_layer": "CALCULUS-EXTENDED",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Chosen iterator carrier, one-step runner, witnessed/respectful iterator predicate, and iterator observational relation or bisimulation.",
+      "blocking_decisions": [
+        "BD-ITER",
+        "BD-EQUIV"
+      ],
+      "rationale": "The paper mixes a least recursive type with a greatest observational relation and leaves finite versus potentially infinite behavior open. The formal carrier must match the termination hypotheses used later.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D52",
+      "kind": "Definition",
+      "number": 52,
+      "section": "4.3.2",
+      "title": "Effect-iterator transformation",
+      "target_layer": "CALCULUS-EXTENDED",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Fold/tracking transformation for the chosen finite or well-founded iterator representation, with compatibility laws.",
+      "blocking_decisions": [
+        "BD-ITER",
+        "BD-EQUIV"
+      ],
+      "rationale": "The printed recursive invocation is justified only after the iterator representation supplies structural or well-founded recursion.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D53",
+      "kind": "Definition",
+      "number": 53,
+      "section": "4.4",
+      "title": "Indexed traces, episodes, step factorization, and state relations",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Separate definitions for incarnation-indexed labelled traces, reached states, fiber episodes, per-step state transformation, control edit, and the relations ≃ and ≈.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-EQUIV",
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "This single paper number introduces several objects with different invariants. Splitting them supplies induction principles, separates ≃ from ≈, and prevents two lifetimes that reuse one atom from becoming one episode.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L54",
+      "kind": "Lemma",
+      "number": 54,
+      "section": "4.4",
+      "title": "Structural write facts",
+      "target_layer": "METATHEORY",
+      "treatment": "DIRECT",
+      "paper_relation": "decomposition",
+      "intended_artifact": "A named family of per-rule structural write/read/monotonicity lemmas derived from the transition constructors.",
+      "blocking_decisions": [
+        "BD-CONTROL"
+      ],
+      "rationale": "The claims should be proved by cases on rules rather than imported from a prose table.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L55",
+      "kind": "Lemma",
+      "number": 55,
+      "section": "4.4",
+      "title": "Observational-equivalence invariance",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Same-label rule applicability and successor invariance/bisimulation under observational equivalence, with nondeterministic choices and relation-respect premises explicit.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-EQUIV",
+        "BD-CONTROL"
+      ],
+      "rationale": "“The same rule applies” is ambiguous for registration, divert, iterator, and failure choices unless the step label carries the relevant witnesses. The intended congruence result remains central.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L56",
+      "kind": "Lemma",
+      "number": 56,
+      "section": "4.4",
+      "title": "Equivariance under fiber-name renaming",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Equivariance theorem for state, targets, rules, and traces under bijective renaming of allocation identities, with a refinement lemma for runtime atom names.",
+      "blocking_decisions": [
+        "BD-NAMES",
+        "BD-CONTROL"
+      ],
+      "rationale": "The paper permits an atom to be reissued after removal, while later trace proofs treat a name as one stable fiber. Equivariance must act on incarnations or assume trace-global freshness.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L57",
+      "kind": "Lemma",
+      "number": 57,
+      "section": "4.4",
+      "title": "Vestigial entries",
+      "target_layer": "METATHEORY",
+      "treatment": "DIRECT",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Vestigial-entry equivalence plus rule-preservation and deletion lemmas.",
+      "blocking_decisions": [
+        "BD-EQUIV",
+        "BD-CONTROL"
+      ],
+      "rationale": "The paper contains several operational consequences under one lemma; named sublemmas will be reused in recovery and deletion proofs.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D58",
+      "kind": "Definition",
+      "number": 58,
+      "section": "4.4.1",
+      "title": "Well-formed registry",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Well-formed-registry predicate with the parent-tree/acyclicity invariant either included or guaranteed by the registry type.",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-NAMES"
+      ],
+      "rationale": "The four displayed clauses do not themselves imply the parent pointers form the tree assumed in D45; the formal boundary must carry that invariant explicitly.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T59",
+      "kind": "Theorem",
+      "number": 59,
+      "section": "4.4.1",
+      "title": "Preservation of registry well-formedness",
+      "target_layer": "METATHEORY",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Single-step preservation followed by trace preservation as a corollary.",
+      "blocking_decisions": [
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "The printed theorem is one-step; the mechanization should immediately expose its induction over reachable traces.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D60",
+      "kind": "Definition",
+      "number": 60,
+      "section": "4.4.2",
+      "title": "Iterator reach, length, transformation monoid, and independence",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Iterator reachability, bounded length, generated transformation monoid, and incarnation-indexed iterator/component independence as separate definitions with closure lemmas.",
+      "blocking_decisions": [
+        "BD-ITER",
+        "BD-EQUIV",
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "Reach and len depend on the iterator carrier, while independence stabilizes inverses and continuations. Indexing by incarnations also makes e_n unambiguous if a runtime atom is reused.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T61",
+      "kind": "Theorem",
+      "number": 61,
+      "section": "4.4.2",
+      "title": "Recovery exactness",
+      "target_layer": "METATHEORY",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Episode-indexed recovery-exactness theorem modulo ≈, with an explicit optional strengthening for intervals whose nested registrations take no steps.",
+      "blocking_decisions": [
+        "BD-EQUIV",
+        "BD-CONTROL"
+      ],
+      "rationale": "The displayed theorem is meaningful as stated. The common informal reading “as if n never began” needs the extra child-step condition recorded separately.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "C62",
+      "kind": "Corollary",
+      "number": 62,
+      "section": "4.4.2",
+      "title": "Terminal recovery",
+      "target_layer": "METATHEORY",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Terminal-recovery corollary for a closed/removed fiber.",
+      "blocking_decisions": [
+        "BD-EQUIV",
+        "BD-CONTROL"
+      ],
+      "rationale": "This is a principal temporal-composability result and a genuine corollary of T61.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T63",
+      "kind": "Theorem",
+      "number": 63,
+      "section": "4.4.3",
+      "title": "Provider-consumer ordering",
+      "target_layer": "METATHEORY",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Provider-before-consumer activation and consumer-before-provider-withdrawal ordering theorem in the single-realm calculus.",
+      "blocking_decisions": [
+        "BD-CONTROL"
+      ],
+      "rationale": "The guarded calculus supplies the asserted temporal orderings; no realm-aware generalization is claimed at this layer.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T64",
+      "kind": "Theorem",
+      "number": 64,
+      "section": "4.4.3",
+      "title": "Resolution coherence",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Resolution-coherence theorem with the independence assumptions inherited from C62 stated explicitly.",
+      "blocking_decisions": [
+        "BD-EQUIV",
+        "BD-ITER",
+        "BD-CONTROL"
+      ],
+      "rationale": "The rollback equation invokes C62, so pairwise independence is required even though the displayed theorem omits it.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D65",
+      "kind": "Definition",
+      "number": 65,
+      "section": "4.4.4",
+      "title": "Precedence relation",
+      "target_layer": "METATHEORY",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Static provider-before-consumer precedence relation over the current registry of fiber incarnations.",
+      "blocking_decisions": [
+        "BD-NAMES"
+      ],
+      "rationale": "The relation depends only on declared provision and dependency sets and is finite on a finite registry; its operands must denote current incarnations, not an atom reused across lifetimes.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T66",
+      "kind": "Theorem",
+      "number": 66,
+      "section": "4.4.4",
+      "title": "Progress and lifecycle termination",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "logical-repair",
+      "intended_artifact": "No-deadlock theorem, per-incarnation step bound, global lifecycle termination theorem, and maximal-run quiescence corollary for a lifecycle-only suffix from an arbitrary reachable state.",
+      "blocking_decisions": [
+        "BD-ITER",
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "A D53 trace starts from an empty registry, so “every step is lifecycle” is vacuous unless the theorem ranges over a reachable suffix. Name reissue also makes fixed e_n, S(n), and V(n) ambiguous without generation identities or a no-reuse premise.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D67",
+      "kind": "Definition",
+      "number": 67,
+      "section": "4.4.5",
+      "title": "Support relation and support set",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "type-repair",
+      "intended_artifact": "Combined support relation plus a support predicate/set defined without a forward reference, according to the chosen well-founded or least-fixed-point construction.",
+      "blocking_decisions": [
+        "BD-SUPPORT",
+        "BD-NAMES"
+      ],
+      "rationale": "Lean cannot define A by recursion whose well-foundedness is supplied only by the following lemma unless the proof is reordered or support is defined inductively.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L68",
+      "kind": "Lemma",
+      "number": 68,
+      "section": "4.4.5",
+      "title": "Support is well founded",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "logical-repair",
+      "intended_artifact": "First mechanize the reached-state counterexample to the literal lemma; then prove a corrected well-foundedness/uniqueness theorem under a strengthened invariant or for a restricted support-relevant relation.",
+      "blocking_decisions": [
+        "BD-SUPPORT",
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "The full rules appear to permit an in-flight retired child to land a late registration after the former provider is removed, producing r ≺ n, parent(n,c), parent(c,r): a cycle in ⊲ while ≺ remains acyclic. Reachability and D58 well-formedness alone do not exclude it.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D69",
+      "kind": "Definition",
+      "number": 69,
+      "section": "4.4.5",
+      "title": "Totality on declared provision",
+      "target_layer": "METATHEORY",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Component total-on-provision predicate quantified over successful completed activations.",
+      "blocking_decisions": [
+        "BD-ITER",
+        "BD-COEFFECT"
+      ],
+      "rationale": "The semantic obligation is clear, but its quantification must range over the formal activation semantics rather than an informal phrase.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L70",
+      "kind": "Lemma",
+      "number": 70,
+      "section": "4.4.5",
+      "title": "Support at quiescence",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Support-equals-active theorem at reachable, well-formed, quiescent, nonfailed states under total provision and the corrected support existence/uniqueness premise.",
+      "blocking_decisions": [
+        "BD-SUPPORT",
+        "BD-CONTROL"
+      ],
+      "rationale": "The literal L68 route is not available. The formal statement must import the repaired support theorem or assume the exact well-foundedness/uniqueness property it needs.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L71",
+      "kind": "Lemma",
+      "number": 71,
+      "section": "4.4.5",
+      "title": "Transposition of adjacent independent steps",
+      "target_layer": "METATHEORY",
+      "treatment": "DIRECT",
+      "paper_relation": "faithful",
+      "intended_artifact": "Adjacent-step transposition lemmas for independent activation steps and compatible orchestration steps.",
+      "blocking_decisions": [
+        "BD-EQUIV",
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "These are the local diamond moves used to normalize schedules.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "L72",
+      "kind": "Lemma",
+      "number": 72,
+      "section": "4.4.5",
+      "title": "Deletion of a closed episode",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "faithful-explicit",
+      "intended_artifact": "Closed-episode deletion theorem with reachability/well-formedness and the repaired support/L70 envelope stated explicitly.",
+      "blocking_decisions": [
+        "BD-SUPPORT",
+        "BD-EQUIV",
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "The printed proof calls L70 although the displayed premises do not state its support-existence and well-foundedness envelope.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "T73",
+      "kind": "Theorem",
+      "number": 73,
+      "section": "4.4.5",
+      "title": "Canonical form and confluence",
+      "target_layer": "METATHEORY",
+      "treatment": "REPAIR",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Canonical-form theorem and confluence for traces with the same ordered orchestration inputs under a corrected support-order hypothesis, plus a separate unique-normal-form corollary adding T66 termination hypotheses.",
+      "blocking_decisions": [
+        "BD-SUPPORT",
+        "BD-EQUIV",
+        "BD-ITER",
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "The proof requires maximal/minimal elements and a linearization of ⊲, which literal L68 does not currently justify. Its formal input is the same ordered orchestration sequence, not merely an extensional final configuration.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "D74",
+      "kind": "Definition",
+      "number": 74,
+      "section": "5.2.1",
+      "title": "Declarative configuration entry",
+      "target_layer": "IMPLEMENTATION-REFINEMENT",
+      "treatment": "DEFER",
+      "paper_relation": "refinement-only",
+      "intended_artifact": "Later typed configuration-entry record, support interpretation, configuration-to-orchestration semantics, and loader refinement specification.",
+      "blocking_decisions": [
+        "BD-SCOPED",
+        "BD-NAMES"
+      ],
+      "rationale": "The record is not used by Section 4. Its “final configuration” interpretation is stronger than T73’s same-ordered-input theorem and therefore needs a loader/refinement proof rather than prose correspondence.",
+      "readiness": "later-phase"
+    }
+  ],
+  "auxiliary_dispositions": [
+    {
+      "id": "SAT",
+      "section": "3.2.2",
+      "title": "Satisfaction predicate (Equation 24)",
+      "target_layer": "COEFFECT-FLAT",
+      "treatment": "REPAIR",
+      "paper_relation": "computability-repair",
+      "intended_artifact": "Semantic satisfaction predicate plus a decidable executable checker and an adequacy theorem.",
+      "blocking_decisions": [
+        "BD-COEFFECT"
+      ],
+      "rationale": "Satisfaction itself needs no finiteness. Its computation needs a finite/enumerable dependency specification and decidable key presence.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "R.base",
+      "section": "4.2",
+      "title": "Base operational rules",
+      "target_layer": "CALCULUS-BASE",
+      "treatment": "SUBSUMED",
+      "paper_relation": "specialization",
+      "intended_artifact": "A derived base-system view and simulation/adequacy theorem against the extended calculus; no duplicate global metatheory.",
+      "blocking_decisions": [
+        "BD-STAGING",
+        "BD-CONTROL"
+      ],
+      "rationale": "The atomic calculus is pedagogically useful, but maintaining two unrelated rule developments would duplicate the main proof burden.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "R.withdraw",
+      "section": "4.3.1",
+      "title": "Withdrawal rules",
+      "target_layer": "CALCULUS-EXTENDED",
+      "treatment": "SUBSUMED",
+      "paper_relation": "decomposition",
+      "intended_artifact": "L-Leave/L-Unload constructors as a named rule subfamily of R.full, with guard and frame lemmas.",
+      "blocking_decisions": [
+        "BD-CONTROL"
+      ],
+      "rationale": "These rules are central, but they should not form a second transition relation independent of the authoritative full calculus.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "R.iter",
+      "section": "4.3.2",
+      "title": "Iteration lifecycle rules",
+      "target_layer": "CALCULUS-EXTENDED",
+      "treatment": "SUBSUMED",
+      "paper_relation": "decomposition",
+      "intended_artifact": "L-Begin/L-Iter/L-Finish and separate abort/landing L-Divert constructors as a named subfamily of R.full.",
+      "blocking_decisions": [
+        "BD-ITER",
+        "BD-CONTROL"
+      ],
+      "rationale": "Splitting the disjunctive divert premise improves induction while a subfamily view avoids a duplicate calculus.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "A.async",
+      "section": "4.3.3",
+      "title": "Asynchronous inertia restriction",
+      "target_layer": "CALCULUS-EXTENDED",
+      "treatment": "REPAIR",
+      "paper_relation": "replacement",
+      "intended_artifact": "Explicit in-flight state or an admissible-host-trace/inertia policy relating launch and landing, with compatibility theorems for progress.",
+      "blocking_decisions": [
+        "BD-ITER",
+        "BD-CONTROL"
+      ],
+      "rationale": "Asynchrony is a restriction on executions/hosts, not another state transformer. The paper state does not record whether an iteration was launched, so the restriction needs a new semantic carrier.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "R.fail",
+      "section": "4.3.4",
+      "title": "Failing iterator refinement and L-Raise",
+      "target_layer": "CALCULUS-EXTENDED",
+      "treatment": "REPAIR",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Failure-aware iterator outcome, success-only witness clause, error/success stability relation, L-Raise constructor, and erasure into nonfailing semantics.",
+      "blocking_decisions": [
+        "BD-ITER",
+        "BD-EQUIV",
+        "BD-CONTROL"
+      ],
+      "rationale": "The exception refinement changes iterator results, witnessing, independence, and lifecycle landing; projections valid only on success must not be treated as total.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "R.full",
+      "section": "4.3-4.4",
+      "title": "Full ten-rule calculus",
+      "target_layer": "CALCULUS-EXTENDED",
+      "treatment": "REPAIR",
+      "paper_relation": "decomposition",
+      "intended_artifact": "Single authoritative labelled semantics with separate orchestration/lifecycle relations and rule constructors (possibly splitting one printed rule into several typed constructors).",
+      "blocking_decisions": [
+        "BD-STATE",
+        "BD-ITER",
+        "BD-STAGING",
+        "BD-CONTROL",
+        "BD-NAMES"
+      ],
+      "rationale": "Section 4.4 reasons about this rule set, but a faithful proof-assistant encoding must expose nondeterministic witnesses, in-flight/failure outcomes, and the two step classes rather than preserve “ten” as a datatype constraint.",
+      "readiness": "decision-blocked"
+    },
+    {
+      "id": "Table1",
+      "section": "4.4",
+      "title": "Rule decomposition into state maps and control edits",
+      "target_layer": "METATHEORY",
+      "treatment": "SUBSUMED",
+      "paper_relation": "derived",
+      "intended_artifact": "Machine-derived per-constructor state-map/control-edit decomposition and write-set lemmas; no axiomatized copy of the prose table.",
+      "blocking_decisions": [
+        "BD-CONTROL"
+      ],
+      "rationale": "Treating the table as an independent truth risks drift from the actual transition relation. Its facts should be proved by rule cases and consumed through L54.",
+      "readiness": "decision-blocked"
+    }
+  ],
+  "integrity": {
+    "numbered_ids_exactly_1_through_74": true,
+    "every_frozen_node_has_exactly_one_disposition": true,
+    "frozen_dependency_edges_copied_or_modified": false,
+    "disposition_rows": 82
+  }
+}
