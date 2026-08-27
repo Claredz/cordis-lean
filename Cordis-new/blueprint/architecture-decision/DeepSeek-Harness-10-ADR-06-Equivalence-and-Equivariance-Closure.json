@@ -1,0 +1,265 @@
+{
+  "metadata": {
+    "artifact_title": "DeepSeek Harness ADR-06-CLOSURE: Equivalence and Equivariance Contract Hardening",
+    "packet_id": "ADR-06-CLOSURE",
+    "parent_decision": "ADR-01",
+    "status": "accepted-compiler-validated",
+    "artifact_version": "1.0-accepted-compiler-validated",
+    "created_on": "2026-08-27",
+    "semantic_change": false,
+    "supersedes": [],
+    "source_title": "Shi, Zhang, and Cui, A Programming Paradigm for Spatiotemporal Composability",
+    "source_sha256": "4d48478dc0b6222d9f74d7db10ee776449b1209eb112632336544d32a49db97f",
+    "frozen_dependency_graph_sha256": "8f99db87d7aa4d856657abdaf469d9941d3af7fea88ababd2e58cba49041ded8",
+    "frozen_disposition_sha256": "63d1fb68bcebb63e5282c7314d03038a93db0a836a6c8b1a08a41c2cd70a43db"
+  },
+  "parent_and_baselines": {
+    "parent_adr": {
+      "artifact": "DeepSeek-Harness-05-ADR-01-Equivalence-Architecture",
+      "json_sha256": "1963c468ebaca2cd86635e88881ecda373b8278d0895c3805c52717e0a056dd5",
+      "role": "authoritative equivalence architecture; unchanged"
+    },
+    "adr02": {
+      "artifact": "DeepSeek-Harness-06-ADR-02-Coeffect-Store-and-Partiality-Architecture",
+      "json_sha256": "f1b8e298edb7405a4a67fa10869d621a2bfeab80d5e5cf6a86feb752878699e5",
+      "role": "authoritative finite dependent store and partiality layer"
+    },
+    "adr03": {
+      "artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture",
+      "json_sha256": "0c6861367cf3061358366e90b2e2848649d96f5ad792185ed5f2e186d0520d48",
+      "role": "authoritative positive finite state carrier"
+    },
+    "adr04": {
+      "artifact": "DeepSeek-Harness-08-ADR-04-Incarnation-Identity-and-Alpha-Equivariance-Architecture",
+      "json_sha256": "80beaaf2c29930527fee17419ae74718ea26140058fda67bb834d8cc435e36cc",
+      "role": "authoritative incarnation and alpha policy"
+    },
+    "adr05": {
+      "artifact": "DeepSeek-Harness-09-ADR-05-Iterator-and-Failure-Architecture",
+      "json_sha256": "86c555027a0a49bb40c95f1d612c12fcb6962d9801c5ed953ba9b1a7d1df04e9",
+      "role": "authoritative ranked iterator and failure carrier"
+    },
+    "dependency_graph": {
+      "artifact": "DeepSeek-Harness-03-Definition-Theorem-Dependency-Graph.json",
+      "version": "1.0-frozen",
+      "sha256": "8f99db87d7aa4d856657abdaf469d9941d3af7fea88ababd2e58cba49041ded8",
+      "mutated": false
+    },
+    "disposition": {
+      "artifact": "DeepSeek-Harness-04-Formalization-Disposition-Specification.json",
+      "version": "1.0-baseline",
+      "sha256": "63d1fb68bcebb63e5282c7314d03038a93db0a836a6c8b1a08a41c2cd70a43db",
+      "mutated": false
+    }
+  },
+  "closure": {
+    "global_blocker": "BD-EQUIV",
+    "prior_architecture": "ADR-01 accepted an explicit relation-parametric law layer over a raw exact algebra.",
+    "closure_role": "cross-module contract hardening, API normalization, and compiler evidence",
+    "status": "closed-at-architecture-and-integration-contract-level",
+    "semantic_change": "none",
+    "historical_snapshots_unchanged": true,
+    "adr05_pointwise_name_collision": "ADR-06 reserves PointwiseRel for same-input agreement and names the old related-input lifting CrossRel."
+  },
+  "scope": {
+    "included": [
+      "explicit RelSpec, Respects, same-input PointwiseRel, and CrossRel bridges",
+      "OptionRel, EffectResultRel, ExecRel, and dependent-store relator shells",
+      "lawful effect composition and equality specialization",
+      "generated transformation-monoid profiles and D19 independence contracts",
+      "partial operation tags, outcomes, selected-inverse coherence, and D39 stability hooks",
+      "ranked iterator simulation/bisimulation, failure prefix, witness, and continuation hooks",
+      "CoreStateObs pullback and distinct observation-profile boundaries",
+      "alpha transport for state, inverses, stages, iterators, execution, and traces",
+      "L38 theorem-manifest boundary and finite L35 countermodel"
+    ],
+    "excluded_or_deferred": [
+      "new raw state carrier or replacement of ADR-01",
+      "concrete finite dependent-map implementation and typed D34 operation-test AST",
+      "tracked-context accumulator proof family beyond the generic effect shell",
+      "concrete ValidState/WF/provider instances and lifecycle frame preservation",
+      "reach-closed generated iterator monoids and lifecycle/control transition rules",
+      "name-bearing Q, Xi, ambient, accumulator, and control-payload alpha actions",
+      "BD-CONTROL, BD-STAGING, BD-SUPPORT, and BD-SCOPED decisions"
+    ]
+  },
+  "decisions": {
+    "relation_vocabulary": {
+      "RelSpec": "explicit reflexive, symmetric, transitive relation value",
+      "Respects": "one-map congruence/properness",
+      "PointwiseRel": "same-input relation forall z, R (f z) (g z)",
+      "CrossRel": "related-input relation forall {x y}, R x y -> R (f x) (g y)",
+      "equivalence_bridge": "CrossRel implies PointwiseRel and, for RelSpec, endpoint Respects; directed simulations must use a separate relation package",
+      "compatibility": "ADR-05's former PointwiseRel spelling is an editorial/API correction, not a semantic carrier change"
+    },
+    "relators_and_observations": {
+      "option": "none relates only to none; some payloads use the supplied relation",
+      "effect_result": "successor state plus same-input-related selected inverse",
+      "execution_result": "success/failure tags are explicit; failure relates error, final prefix state, and prefix inverse",
+      "dependent_store": "DepStoreObs and depStoreObsSpec provide a pointwise schema; ADR-02 Finmap remains authoritative",
+      "profiles": ["CoreStateObs", "LifecycleObs", "EraseControl", "OpTestEq", "NameRenaming"],
+      "profile_rule": "no automatic refinement or coercion between named observation profiles"
+    },
+    "effects": {
+      "lawfulness": ["run_respects", "undo_respects", "recovers"],
+      "composition": "seqRun_lawful proves exact sequential closure with outer-after-inner inverse composition",
+      "equality": "lawful_equality_iff recovers the repaired exact witness condition",
+      "tracked_context": "T15/T16 accumulator and lift proofs remain an implementation bridge, not claimed by this standalone Effect shell"
+    },
+    "independence": {
+      "D19": ["CommuteUpTo", "SelectedInverseStable", "GeneratedEffectProfile", "GeneratedIndependenceContract"],
+      "non_vacuity": "TransformationMonoidProfile supplies identity/composition closure; GeneratedEffectProfile records forward and every returned-undo generator",
+      "leastness": "equality with the paper's least generated monoid is a D17/L18 proof obligation, not an axiom"
+    },
+    "partial_operations": {
+      "core": ["OpResult", "PartialOp", "WeakOperationRespects", "SelectedInverseCoherent", "OperationRecovers", "OperationRespects"],
+      "D39_hooks": ["DefinedAt", "DefinednessStable", "OutcomeStable", "SelectedInverseStableOp", "OperationForeignStability", "OperationIndependenceContract"],
+      "outcome_policy": "ordinary outcomes use equality unless an explicit outcome relation is supplied",
+      "L35": "weak congruence, selected-inverse coherence, and recovery are separate; finite Toy countermodel shows weak properness does not imply coherence"
+    },
+    "iterator": {
+      "carrier": "ADR-05 RankedIterator with Nat rank and StageResult halt/yield/raise",
+      "relations": ["StageRelC", "ExecRel", "IteratorSimulation", "IteratorBisim"],
+      "bisimulation": "the reverse simulation uses converse continuation relation fun q q' => C q' q",
+      "recovery": ["StageInverseProper", "IteratorInverseProper", "StageWitness", "IteratorWitness", "execFrom_witness"],
+      "transport": "execFrom_rel uses a sum-rank induction measure and directional simulation; equal ranks are not assumed",
+      "D60_hook": "ContinuationStable and IteratorIndependenceContract package state/inverse/continuation stability with commutation and properness",
+      "D60_boundary": "the exact reach-closed, yielded-only generated monoid specialization remains a downstream integration obligation"
+    },
+    "alpha_equivariance": {
+      "action": "AlphaAction with identity, composition, and inverse/cancellation laws",
+      "compiled_transport": ["respects_renameUndo", "stageRelC_rename", "iteratorSimulation_rename", "iteratorBisim_rename", "iteratorInverseProper_rename", "iteratorWitness_rename", "stepLawful_rename", "iteratorLawful_rename", "execFrom_rename_transport", "exec_rename_transport", "execTransportContract_proof", "renameEvent_id", "renameEvent_comp", "renameTrace_id", "renameTrace_comp"],
+      "payload_boundary": "Q and Xi are unchanged in the compiled profile; name-bearing payloads require explicit actions and interpreter refinement"
+    },
+    "L38": {
+      "form": "generated theorem manifest and relation-parametric specialization",
+      "rule": "do not perform a textual global replacement of equality by an observational glyph",
+      "exact_specialization": "equality Γ supplies the Section-3.1 exact instance"
+    }
+  },
+  "lean_api": {
+    "namespace": "CordisADR06",
+    "artifact": "DeepSeek-Harness-10-ADR-06-Equivalence-and-Equivariance-Closure-Spike.lean",
+    "representative_declarations": [
+      "RelSpec",
+      "RespectsOn",
+      "Respects",
+      "PointwiseRel",
+      "CrossRel",
+      "OptionRel",
+      "CoreStateObs",
+      "DepStoreObs",
+      "depStoreObsSpec",
+      "EffectResultRel",
+      "IsLawfulEffect",
+      "seqRun",
+      "GeneratedEffectProfile",
+      "GeneratedIndependenceContract",
+      "OperationRespects",
+      "OperationForeignStability",
+      "OperationIndependenceContract",
+      "RankedIterator",
+      "StageRelC",
+      "IteratorSimulation",
+      "IteratorBisim",
+      "ContinuationStable",
+      "IteratorIndependenceContract",
+      "ExecRel",
+      "execFrom",
+      "AlphaAction",
+      "renameIterator",
+      "renameTrace"
+    ],
+    "compiled_theorems": [
+      "crossRel_of_respects_pointwise",
+      "pointwiseRel_of_crossRel",
+      "respects_left_of_crossRel",
+      "respects_right_of_crossRel",
+      "optionRelSpec",
+      "depStoreObsSpec",
+      "effectResultRelSpec",
+      "seqRun_lawful",
+      "lawful_equality_iff",
+      "execRelSpec",
+      "execFrom_witness",
+      "execFrom_rel",
+      "exec_rel",
+      "iteratorWitness_rename",
+      "iteratorLawful_rename",
+      "execFrom_rename_transport",
+      "exec_rename_transport",
+      "execTransportContract_proof",
+      "renameTrace_comp",
+      "weakEffectResult_not_coherent"
+    ],
+    "contracts_not_inhabited_automatically": [
+      "GeneratedIndependenceContract",
+      "OperationIndependenceContract",
+      "IteratorIndependenceContract",
+      "ExecTransportContract for name-bearing payload profiles"
+    ]
+  },
+  "paper_mapping": [
+    {"paper_items": ["D8", "T11", "T15", "T16"], "formal_boundary": "IsLawfulEffect, seqRun_lawful, equality specialization, and L38 manifest", "status": "relation architecture closed; tracked accumulator proof remains"},
+    {"paper_items": ["D19", "T20", "C21"], "formal_boundary": "CommuteUpTo, selected inverse stability, and generated monoid profiles", "status": "contract closed; concrete generated-submonoid theorem remains"},
+    {"paper_items": ["D23", "D24", "D41", "T42"], "formal_boundary": "tagged partial relators and operation foreign-stability hooks", "status": "adapter closed; ADR-02 key-lift proofs remain"},
+    {"paper_items": ["D32", "D33", "D36", "D37"], "formal_boundary": "pullback observation and returned-result relators", "status": "boundary closed; concrete state/WF/provider instance remains"},
+    {"paper_items": ["D34", "L35"], "formal_boundary": "weak/full operation-law split and finite countermodel", "status": "logical repair closed; typed test AST/coarsestness remains"},
+    {"paper_items": ["L38"], "formal_boundary": "generated theorem manifest and equality specialization", "status": "manifest boundary closed; full inventory remains"},
+    {"paper_items": ["D39", "T40"], "formal_boundary": "map commutation/properness plus definedness/outcome/inverse stability", "status": "contract closed; concrete distinct-key theorem remains"},
+    {"paper_items": ["D48", "D51", "D52"], "formal_boundary": "state relation hook, ranked iterator, witnesses, and execution transport", "status": "interface closed; confinement/lifecycle integration remains"},
+    {"paper_items": ["D60"], "formal_boundary": "continuation-stability and iterator-independence contract", "status": "conservative interface closed; reach/control specialization remains"}
+  ],
+  "readiness_effect": {
+    "baseline_equi_rows": 36,
+    "baseline_equi_rows_definition": "35 numbered rows plus auxiliary R.fail",
+    "baseline_local_free_after_only_equiv": ["D8", "T11", "T15", "T16", "D19", "T20", "C21", "D36", "D37", "L38"],
+    "cumulative_accepted_decisions": ["BD-COEFFECT", "BD-STATE", "BD-NAMES", "BD-ITER", "BD-EQUIV"],
+    "cumulative_new_decision_free": ["D8", "T11", "T15", "T16", "D19", "T20", "C21", "D23", "D24", "D32", "D33", "D34", "L35", "D36", "D37", "L38", "D39", "T40", "D41", "T42", "D48", "D51", "D52"],
+    "remaining_equi_rows_by_blocker": {
+      "BD-SCOPED": ["D29", "D31"],
+      "BD-CONTROL": ["D53", "L55", "L57", "D60", "T61", "C62", "T64", "L71", "R.fail"],
+      "BD-CONTROL+BD-SUPPORT": ["L72", "T73"]
+    },
+    "global_local_ready_before": 24,
+    "global_local_ready_after": 47,
+    "strict_transitive_diagnostic_after": 41,
+    "interpretation": "Local readiness subtracts only the resolved blocker; strict transitive count is diagnostic and does not mutate H03/H04."
+  },
+  "acceptance_checks": [
+    {"id": "EQ-CLOSE-01", "check": "canonical same-input PointwiseRel and separate CrossRel with bridges", "status": "passed-in-spike"},
+    {"id": "EQ-CLOSE-02", "check": "Option/effect/execution relators and dependent-store equivalence shell", "status": "passed-in-spike"},
+    {"id": "EQ-CLOSE-03", "check": "lawful effects, sequential closure, and equality specialization", "status": "passed-in-spike"},
+    {"id": "EQ-CLOSE-04", "check": "non-vacuous generated-monoid profile and D19 contract", "status": "API represented; least-generated proof pending"},
+    {"id": "EQ-CLOSE-05", "check": "partial operation law split and L35 countermodel", "status": "API and countermodel compiled; typed D34 AST pending"},
+    {"id": "EQ-CLOSE-06", "check": "D39 common-definedness, exact outcome, and selected-inverse stability hooks", "status": "contract represented; concrete key-lift theorem pending"},
+    {"id": "EQ-CLOSE-07", "check": "ranked iterator, failure prefix, witnesses, simulation, and bisimulation", "status": "passed for standalone carrier; lifecycle integration pending"},
+    {"id": "EQ-CLOSE-08", "check": "D60 continuation stability and converse continuation relation", "status": "conservative contract represented; reach specialization pending"},
+    {"id": "EQ-CLOSE-09", "check": "CoreStateObs pullback and named observation profiles", "status": "generic/dependent shells passed; concrete state instances pending"},
+    {"id": "EQ-CLOSE-10", "check": "alpha transport for state, inverse, stage, iterator, execution, and trace", "status": "passed for name-neutral Q/Xi profile; named payload actions pending"},
+    {"id": "EQ-CLOSE-11", "check": "L38 manifest and equality specialization boundary", "status": "recorded; full theorem inventory pending"},
+    {"id": "EQ-CLOSE-12", "check": "placeholder and unsafe-code hygiene", "status": "passed; no sorry/admit/custom axiom/unsafe"}
+  ],
+  "validation": {
+    "command": "lake env lean artifacts/DeepSeek-Harness-10-ADR-06-Equivalence-and-Equivariance-Closure-Spike.lean",
+    "toolchain": {"lean": "4.33.0", "lake": "5.0.0"},
+    "exit_code": 0,
+    "warnings_only": true,
+    "warning_count": 21,
+    "whole_project_build_claimed": false,
+    "placeholder_scan": {"sorry": false, "admit": false, "custom_axiom": false, "unsafe": false}
+  },
+  "integrity": {
+    "markdown_artifact": "DeepSeek-Harness-10-ADR-06-Equivalence-and-Equivariance-Closure.md",
+    "markdown_sha256": "a772e7bd143aa6c1f060b14282d7daed9aa67e750f385a2aba783ff2b559e562",
+    "lean_spike_artifact": "DeepSeek-Harness-10-ADR-06-Equivalence-and-Equivariance-Closure-Spike.lean",
+    "lean_spike_sha256": "91239ee5aece9a485453aefd805bfbc37fec11a9c6e4e46841234462d63b4de4",
+    "json_self_hash_excluded": true
+  },
+  "revision_policy": {
+    "editorial_change": "patch version",
+    "spike_contract_repair": "revised closure packet and spike with new hashes",
+    "carrier_or_observation_change": "superseding ADR required",
+    "frozen_baselines_must_remain_unchanged": true
+  }
+}

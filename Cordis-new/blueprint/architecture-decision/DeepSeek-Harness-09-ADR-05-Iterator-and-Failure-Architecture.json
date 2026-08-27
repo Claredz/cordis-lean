@@ -1,0 +1,296 @@
+{
+  "metadata": {
+    "artifact_title": "DeepSeek Harness ADR-05: Iterator and Failure Architecture",
+    "decision_id": "ADR-05",
+    "status": "architecture-accepted-spike-compiled",
+    "artifact_version": "1.0.0-accepted-compiler-validated",
+    "created_on": "2026-08-26",
+    "validation_updated_on": "2026-08-26",
+    "semantic_closure_status": "carrier-and-execution-boundary-resolved; downstream lifecycle-and-control-proofs-pending",
+    "source_title": "A Programming Paradigm for Spatiotemporal Composability",
+    "source_sha256": "4d48478dc0b6222d9f74d7db10ee776449b1209eb112632336544d32a49db97f",
+    "artifact_scope": "BD-ITER iterator, continuation, folding, boundedness, reach, and failure carrier"
+  },
+  "baselines": {
+    "dependency_graph": {
+      "artifact": "DeepSeek-Harness-03-Definition-Theorem-Dependency-Graph.json",
+      "version": "1.0-frozen",
+      "sha256": "8f99db87d7aa4d856657abdaf469d9941d3af7fea88ababd2e58cba49041ded8",
+      "mutated_by_this_decision": false
+    },
+    "disposition": {
+      "artifact": "DeepSeek-Harness-04-Formalization-Disposition-Specification.json",
+      "version": "1.0-baseline",
+      "sha256": "63d1fb68bcebb63e5282c7314d03038a93db0a836a6c8b1a08a41c2cd70a43db",
+      "mutated_by_this_decision": false
+    }
+  },
+  "dependencies": {
+    "ADR-01": {
+      "artifact": "DeepSeek-Harness-05-ADR-01-Equivalence-Architecture",
+      "status": "accepted",
+      "json_sha256": "1963c468ebaca2cd86635e88881ecda373b8278d0895c3805c52717e0a056dd"
+    },
+    "ADR-02": {
+      "artifact": "DeepSeek-Harness-06-ADR-02-Coeffect-Store-and-Partiality-Architecture",
+      "status": "accepted-local-canonical",
+      "json_sha256": "f1b8e298edb7405a4a67fa10869d621a2bfeab80d5e5cf6a86feb752878699e",
+      "provenance_note": "The local accepted revision is authoritative for this chain; this ADR does not mutate the earlier ADR-02 item."
+    },
+    "ADR-03": {
+      "artifact": "DeepSeek-Harness-07-ADR-03-Unified-State-and-Registry-Architecture",
+      "status": "accepted-compiler-validated-user-reported",
+      "json_sha256": "0c6861367cf3061358366e90b2e2848649d96f5ad792185ed5f2e186d0520d48"
+    },
+    "ADR-03-CLOSURE": {
+      "artifact": "DeepSeek-Harness-07-ADR-03-BD-STATE-Closure-Packet",
+      "status": "accepted-compiler-validated",
+      "json_sha256": "2ef858c0a4d99bdf792e98e779d4c452884690f1a3d68addcefec6d827469a35"
+    },
+    "ADR-04": {
+      "artifact": "DeepSeek-Harness-08-ADR-04-Incarnation-Identity-and-Alpha-Equivariance-Architecture",
+      "status": "accepted-compiler-validated",
+      "json_sha256": "80beaaf2c29930527fee17419ae74718ea26140058fda67bb834d8cc435e36cc"
+    }
+  },
+  "decision": {
+    "resolves": ["BD-ITER"],
+    "statement": "Use a ranked continuation machine with an external control-code type Q. Each run returns halt, yield with a state-dependent successor, or raise with an error; every yielded successor has strictly smaller Nat rank. Execute by well-founded recursion and retain the accumulated prefix inverse on failure.",
+    "primary_pattern": "ranked-state-dependent-continuation-machine",
+    "paper_fidelity_status": "formalization-repair/refinement-profile; the paper's literal mu-recursive equation remains a source notation rather than the Lean core",
+    "raw_state_change": false,
+    "control_code_boundary": "Q is external program/control data and is not RawState, FiberName, IncarnationId, or a recursive FiberCell field",
+    "termination_certificate": "run q gamma = yield delta undo next implies rank next < rank q",
+    "global_fintype_assumption": false,
+    "finite_profile": "path finiteness is guaranteed by rank; all-node enumeration additionally requires an explicit finite closed support or Fintype Q specialization",
+    "failure_policy": "raise yields no new state or inverse; ExecResult.failure retains error, boundary state, and inverse for the successful prefix",
+    "error_observation": "exact equality by default; a coarser diagnostic relation must be supplied explicitly",
+    "async_policy": "asynchrony and divert/landing are control-layer trace constraints, not iterator constructors"
+  },
+  "stage_result": {
+    "constructors": [
+      {
+        "name": "halt",
+        "fields": ["state", "undo"],
+        "meaning": "successful final stage; no continuation"
+      },
+      {
+        "name": "yield",
+        "fields": ["state", "undo", "next"],
+        "meaning": "successful stage followed by a state-dependent continuation code of lower rank"
+      },
+      {
+        "name": "raise",
+        "fields": ["error"],
+        "meaning": "failure at the current boundary; no successful-stage witness is produced"
+      }
+    ],
+    "failure_result": {
+      "constructors": ["success(state, undo)", "failure(error, state_at_boundary, prefix_undo)"],
+      "prefix_undo_rule": "A failed continuation propagates the inverse accumulated by all preceding successful stages."
+    }
+  },
+  "execution": {
+    "equations": {
+      "raise": "execFrom q gamma = failure error gamma id",
+      "halt": "execFrom q gamma = success delta undo",
+      "yield_success": "run q gamma = yield delta undo next and execFrom next delta = success final inner => success final (undo composed with inner)",
+      "yield_failure": "run q gamma = yield delta undo next and execFrom next delta = failure error final inner => failure error final (undo composed with inner)"
+    },
+    "composition": "composeUndo outer inner = outer o inner; application is outer(inner(x))",
+    "lifo": "The continuation inverse is applied first, then the current-stage inverse; this is D52's LIFO order.",
+    "plain_effect_embedding": "A one-node rank-zero machine that always halts embeds an ordinary witnessed effect."
+  },
+  "boundedness": {
+    "edge_bound": "rank(q)",
+    "stage_bound": "rank(q) + 1",
+    "count_definition": "stageCountFrom counts the current stage and recursively counts yielded continuations",
+    "count_theorem": "stageCountFrom it q gamma <= rank(q) + 1",
+    "uniform_predicate": "UniformlyBounded it K := forall q gamma, reachableFromRoot it q -> stageCountFrom it q gamma <= K",
+    "root_certificate": "Every ranked iterator is uniformly bounded by stageLengthBound it root = rank(root) + 1",
+    "convention_note": "The paper's len(i) prose is ambiguous between continuation edges and stages; the blueprint records the convention at each T66 instantiation."
+  },
+  "reach_and_generators": {
+    "has_next": "hasNext it q q' iff there exist gamma, delta, undo with run q gamma = yield delta undo q'",
+    "reach": "Reach is the reflexive-transitive closure of hasNext and quantifies over all possible input states, not only one concrete run",
+    "rank_monotonicity": "Reach it q q' implies rank(q') <= rank(q)",
+    "failure_safe_generators": "D60 generators are first represented as successful stage graph edges; failures have no total forward projection",
+    "graph_closure": "TransformClosure contains identity, generator edges, and transitive composition",
+    "function_monoid_refinement": "For total deterministic nonfailing stages, the graph can later be reified as a submonoid of Function.End Gamma",
+    "independence": "Iterator independence remains an explicit relation-level certificate requiring map commutation modulo the selected observation, inverse stability, and continuation stability"
+  },
+  "relations": {
+    "pointwise_inverse": "PointwiseRel R f g := forall related x,y, R (f x) (g y)",
+    "stage_relation": "halt compares with halt, yield with yield and related continuation codes, raise with raise; success and failure never cross-relate",
+    "same_code_specialization": "StageRel uses equality of Q for local StepLawful contracts",
+    "bisimulation_interface": "IteratorBisim accepts a separate continuation relation C and is the replacement for the paper's greatest iterator relation",
+    "witness": "InverseProper R gamma delta undo := R (undo delta) gamma; the witness is imposed only on halt/yield"
+  },
+  "integration": {
+    "adr03": "Iterator code, rank, runner, and interpreter environment stay outside RawState/FiberCell; no unrestricted RawState -> RawState field is introduced",
+    "adr04": "IncarnationId is a name-bearing lifecycle identity, distinct from Q. Any nested allocation must be exposed by later labelled control steps",
+    "alpha_equivariance": "Name-neutral iterator payloads require an explicit opacity assumption; name-capturing payloads need a rename action and interpreter equivariance",
+    "control": "BD-CONTROL consumes ExecResult and supplies L-Begin, L-Iter, L-Finish, L-Raise, L-Divert, retry policy, and labelled orchestration",
+    "staging": "Committed-view/guarded-unload staging is supplied by BD-STAGING and is not smuggled into the iterator carrier"
+  },
+  "paper_mapping": [
+    {
+      "paper_item": "D51",
+      "formal_boundary": "RankedIterator, StageResult, rank-decrease certificate, StageWitness, StageRelC, IteratorBisim"
+    },
+    {
+      "paper_item": "D52",
+      "formal_boundary": "execFrom, exec, composeUndo, foldUndo, well-founded fold, and LIFO inverse composition"
+    },
+    {
+      "paper_item": "R.iter",
+      "formal_boundary": "Control-layer lifecycle constructors consuming successful ExecResult"
+    },
+    {
+      "paper_item": "R.fail",
+      "formal_boundary": "StageResult.raise, ExecResult.failure, success-only witness, and prefix undo handed to L-Raise/L-Unload"
+    },
+    {
+      "paper_item": "D60",
+      "formal_boundary": "hasNext, Reach, stageCountFrom, rank-derived UniformlyBounded, and successful graph closure"
+    },
+    {
+      "paper_item": "T66",
+      "formal_boundary": "UniformlyBounded it K plus reachable lifecycle suffix, finite orchestration budget, and finite incarnation support"
+    }
+  ],
+  "alternatives": [
+    {
+      "alternative": "literal mu-recursive iterator type",
+      "decision": "rejected",
+      "reason": "Does not choose least/greatest/productive semantics and supplies no executable termination certificate."
+    },
+    {
+      "alternative": "coinductive stream/tree as core",
+      "decision": "deferred",
+      "reason": "Useful for potentially infinite behavior but incompatible with the current finite T66 profile without an additional boundedness layer."
+    },
+    {
+      "alternative": "plain list of stage runners",
+      "decision": "subprofile only",
+      "reason": "Easy to execute but loses state-dependent continuation selection unless a separate compilation theorem is added."
+    },
+    {
+      "alternative": "fuel-only evaluator",
+      "decision": "implementation technique only",
+      "reason": "Fuel can truncate a valid iterator and therefore should not be the semantic invariant."
+    },
+    {
+      "alternative": "ranked continuation machine",
+      "decision": "accepted",
+      "reason": "Preserves dynamic branching, supports well-founded execution, exposes a finite bound, and avoids recursive State closures."
+    },
+    {
+      "alternative": "general WellFounded successor relation",
+      "decision": "deferred extension",
+      "reason": "More general than Nat rank, but the current theorem target needs an executable uniform finite bound."
+    },
+    {
+      "alternative": "failure as Option or identity inverse",
+      "decision": "rejected",
+      "reason": "Erases error, boundary state, or prefix recovery and breaks L-Raise reasoning."
+    }
+  ],
+  "acceptance_gates": [
+    {
+      "id": "ITER-01",
+      "description": "No literal mixed-variance/fixed-point type in executable core",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-02",
+      "description": "State-dependent continuation choice",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-03",
+      "description": "Explicit strict-decrease termination certificate",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-04",
+      "description": "Executable one-step and recursive fold semantics",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-05",
+      "description": "LIFO inverse accumulation",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-06",
+      "description": "Failure carries error, boundary state, and prefix undo",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-07",
+      "description": "No success/failure identity erasure",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-08",
+      "description": "Relation and continuation-bisimulation boundary",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-09",
+      "description": "Reach and bounded-length interface",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-10",
+      "description": "Failure-safe D60 generator boundary",
+      "status": "passed-with-function-reification-deferred"
+    },
+    {
+      "id": "ITER-11",
+      "description": "ADR-03/ADR-04 state and identity boundaries preserved",
+      "status": "passed"
+    },
+    {
+      "id": "ITER-12",
+      "description": "Pinned Lean compile with no placeholders",
+      "status": "passed-exit-0-warnings-only"
+    }
+  ],
+  "spike": {
+    "artifact": "DeepSeek-Harness-09-ADR-05-Iterator-and-Failure-Architecture-Spike.lean",
+    "namespace": "CordisADR05",
+    "imports": ["Mathlib.Tactic"],
+    "compiler": "Lean 4.33.0 / pinned project environment",
+    "compile_status": "exit code 0; warnings only",
+    "local_sha256": "915d7b7ac0c4ce6316bc112648960865fe7865932f3b02b54c9aa109eb373e15"
+  },
+  "readiness_effect": {
+    "graph_and_disposition_mutated": false,
+    "remaining_blockers_after_removing_bd_iter": {
+      "D43": ["BD-STATE", "BD-COEFFECT"],
+      "D44": ["BD-STATE", "BD-STAGING"],
+      "D48": ["BD-STATE", "BD-EQUIV"],
+      "D49": ["BD-STATE", "BD-STAGING", "BD-CONTROL"],
+      "D51": ["BD-EQUIV"],
+      "D52": ["BD-EQUIV"],
+      "D60": ["BD-EQUIV", "BD-CONTROL"],
+      "T64": ["BD-EQUIV", "BD-CONTROL"],
+      "T66": ["BD-CONTROL"],
+      "T73": ["BD-SUPPORT", "BD-EQUIV", "BD-CONTROL"],
+      "D69": ["BD-COEFFECT"],
+      "R.iter": ["BD-CONTROL"],
+      "A.async": ["BD-CONTROL"],
+      "R.fail": ["BD-EQUIV", "BD-CONTROL"],
+      "R.full": ["BD-STATE", "BD-STAGING", "BD-CONTROL"]
+    },
+    "not_claimed_proved": ["BD-EQUIV", "BD-CONTROL", "BD-STAGING", "BD-SUPPORT"]
+  },
+  "revision_policy": [
+    "Editorial clarification retaining ranked carrier: patch revision.",
+    "Additional executable lemmas retaining carrier: minor revision.",
+    "Changing to an unbounded/coinductive default, identity failure projection, or RawState-stored iterator: superseding ADR required.",
+    "Frozen Harness-03/04 and accepted ADR-01/02/03/04 artifacts remain unchanged."
+  ]
+}
